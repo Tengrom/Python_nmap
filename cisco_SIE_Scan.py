@@ -81,7 +81,7 @@ with open(inputfile) as f:
                     counter_test=counter_test+1
                     #print(counter_test)
 		    #start scan to get more detailed informaiton about target
-                    udpr=nm2.scan(host,'161',"-sU -sC snmp-info.nse")
+                    udpr=nm2.scan(host,'161',"-sU -sC ")
                     udp_status=nm2._scan_result['scan'][host]['udp'][161]['state']
                     if udp_status=="open":
                         output=parser_cisco_SIE(nm2)
