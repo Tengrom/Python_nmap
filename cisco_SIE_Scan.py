@@ -22,16 +22,9 @@ def parser_cisco_SIE(nmap_results):
     info="snmp-info"
     errorcheck1=sysdescr in test
     errorcheck2=info in test
-    #try:
+    
     if errorcheck1:
-        sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-sysdescr']
-    elif errorcheck2:
-        sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-info']
-        error=1
-    else:
-        error=2
-
-    if error==0:
+		sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-sysdescr']
         split=sysdescr.split(",")
         check1="Software"
         check2="Version"
@@ -45,7 +38,8 @@ def parser_cisco_SIE(nmap_results):
         part22=part2.split("\n")
         part2=part22[0]
         output_parser=" , "+host+" , "+part1+" , "+part2+"\n"
-    elif error==1:
+    elif errorcheck2:
+		sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-info']
         sysdescr_list=sysdescr.splitlines()
         output_parser=" , "+host+" , "+sysdescr_list[1]+" , no_version_info \n"
 
@@ -67,7 +61,7 @@ with open(inputfile) as f:
                 testhost=nm._scan_result['scan'][host]
                 r2=nm._scan_result['scan'][host]['status']['state']
                 r3=nm._scan_result['scan'][host]['tcp'][4786]['state']
-                # need that becouse using python nmap module and large subnets scans some ack packed are missing and it is marking open ports us filtered, per ip is working fine(I tested it with  diferent timeouts, scan type)
+                # scanning large subnets scans some ack packed are missing and it is marking open ports us filtered, need to scan againg it per ip is working fine
                 if r2=="up" and r3=="filtered":
                     nm3=nmap.PortScanner()
                     nm3.scan(host,'4786',"-sS")
@@ -80,11 +74,11 @@ with open(inputfile) as f:
                         fileout.write("e , "+host+" , Scan_error , \n")
                         #print("error_end")
                     elif r2=="up":
-
                         r3=nm3._scan_result['scan'][host]['tcp'][4786]['state']
                         if r3=="open":
                             counter_rescan=counter_rescan+1
-                        #print("Successfully rescanned "+host)
+
+					   #print("Successfully rescanned "+host)
                     else:
                         print(nm3._scan_result['scan'][host])
                        
