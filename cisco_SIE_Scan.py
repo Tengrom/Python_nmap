@@ -61,18 +61,14 @@ with open(inputfile) as f:
                 testhost=nm._scan_result['scan'][host]
                 r2=nm._scan_result['scan'][host]['status']['state']
                 r3=nm._scan_result['scan'][host]['tcp'][4786]['state']
-                # scanning large subnets scans some ack packed are missing and it is marking open ports us filtered, need to scan againg it per ip is working fine
+                # when scanning large subnets, some ack packed are missing and it is marking open ports us filtered, need to scan againg it per ip is working fine
                 if r2=="up" and r3=="filtered":
                     nm3=nmap.PortScanner()
                     nm3.scan(host,'4786',"-sS")
                     test_scan_finished=nm3.all_hosts()
                     test_scan_finished_len=len(test_scan_finished)
                     if test_scan_finished_len==0:
-                        #print(testhost)
-                        #print("error")
-                        #print(nm3.csv())
                         fileout.write("e , "+host+" , Scan_error , \n")
-                        #print("error_end")
                     elif r2=="up":
                         r3=nm3._scan_result['scan'][host]['tcp'][4786]['state']
                         if r3=="open":
@@ -81,11 +77,10 @@ with open(inputfile) as f:
 					   #print("Successfully rescanned "+host)
                     else:
                         print(nm3._scan_result['scan'][host])
-                       
-                    #print("----")
                 if r3=="open":
                     counter_test=counter_test+1
                     #print(counter_test)
+		    #start scan to get more detailed informaiton about target
                     udpr=nm2.scan(host,'161',"-sU -sC snmp-info.nse")
                     udp_status=nm2._scan_result['scan'][host]['udp'][161]['state']
                     if udp_status=="open":
