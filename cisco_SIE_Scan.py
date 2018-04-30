@@ -24,7 +24,8 @@ def parser_cisco_SIE(nmap_results):
     errorcheck2=info in test
     
     if errorcheck1:
-		sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-sysdescr']
+        #if evertyging is fine parse
+	sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-sysdescr']
         split=sysdescr.split(",")
         check1="Software"
         check2="Version"
@@ -39,7 +40,7 @@ def parser_cisco_SIE(nmap_results):
         part2=part22[0]
         output_parser=" , "+host+" , "+part1+" , "+part2+"\n"
     elif errorcheck2:
-		sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-info']
+	sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-info']
         sysdescr_list=sysdescr.splitlines()
         output_parser=" , "+host+" , "+sysdescr_list[1]+" , no_version_info \n"
 
