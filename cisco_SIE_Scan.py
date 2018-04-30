@@ -117,7 +117,7 @@ print(inputfile)
 fileout.write(inputfile+"\n")
 with open(inputfile) as f:
         for line in f:
-            print(line)
+            print("Start scanning: " + line)
             #Starting scan for 4786 SIE port on cisco devices
             nm.scan(line,'4786',"-sS")
             for host in nm.all_hosts():
@@ -132,19 +132,17 @@ with open(inputfile) as f:
                     test_scan_finished_len=len(test_scan_finished)
                     if test_scan_finished_len==0:
                         fileout.write("e , "+host+" , Scan_error , \n")
-                    elif r2=="up":
+                    else:
                         r3=nm3._scan_result['scan'][host]['tcp'][4786]['state']
                         if r3=="open":
                             counter_rescan=counter_rescan+1
-
-					   #print("Successfully rescanned "+host)
-                    else:
-                        print(nm3._scan_result['scan'][host])
+                            print("Success rescanned")
+                        else:
+                            print("ports filtered "+host)
                 if r3=="open":
                     vulne_checked=vuln_check(host)
                     if vulne_checked=="Vulnerable" or vulne_checked=="Maybe":
                         counter_test=counter_test+1
-                        #print(counter_test)
 	                #start scan to get more detailed informaiton about target
                         udpr=nm2.scan(host,'161',"-sU -sC ")
                         udp_status=nm2._scan_result['scan'][host]['udp'][161]['state']
