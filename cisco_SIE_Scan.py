@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import sys, getopt
 import nmap
+import socket
 if len (sys.argv) != 3:
     print "Usage: python <input file name> <output file name>"
     sys.exit (1)
@@ -13,6 +14,67 @@ nm=nmap.PortScanner()
 nm2=nmap.PortScanner()
 #TCP scan 
 nm3=nmap.PortScanner()
+
+#part of code from cisco talos https://raw.githubusercontent.com/Cisco-Talos/smi_check/master/smi_check.py
+
+def vuln_check(IP):
+
+    CONN_TIMEOUT = 10
+
+    conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    conn.settimeout(CONN_TIMEOUT)
+
+    try:
+        conn.connect((IP, 4786))
+    except socket.gaierror:
+        print('[ERROR] Could not resolve hostname. Exiting.')
+        sys.exit()
+    except socket.error:
+        print('[ERROR] Could not connect to '+IP)
+        print('[INFO] Either Smart Install feature is Disabled, or Firewall is blocking port {0}')
+        print('[INFO] Is not affected '+IP)
+        sys.exit()
+
+    if conn:
+        req = '0' * 7 + '1' + '0' * 7 + '1' + '0' * 7 + '4' + '0' * 7 + '8' + '0' * 7 + '1' + '0' * 8
+        resp = '0' * 7 + '4' + '0' * 8 + '0' * 7 + '3' + '0' * 7 + '8' + '0' * 7 + '1' + '0' * 8
+        conn.send(req.decode('hex'))
+
+        while True:
+            try:
+                data = conn.recv(512)
+                if (len(data) < 1):
+                    print('[INFO] Smart Install Director feature active on '+IP)
+                    print('[INFO] is not affected '+IP)
+                    return "False"
+                    break
+                elif (len(data) == 24):
+                    if (data.encode('hex') == resp):
+                        print('[INFO] Smart Install Client feature active on '+IP)
+                        print('[INFO] is affected '+IP)
+                        return "Vulnerable"
+                        break
+                    else:
+                        print('[ERROR] Unexpected response received, Smart Install Client feature might be active on '+IP)
+                        print('[INFO] Unclear whether is affected or not '+IP)
+                        return "Maybe"
+                        break
+                else:
+                    print('[ERROR] Unexpected response received, Smart Install Client feature might be active on '+IP)
+                    print('[INFO] Unclear whether {0} is affected or not '+IP)
+                    return "Maybe"
+                    break
+            except socket.error:
+                print('[ERROR] No response after {0} seconds (default connection timeout)'.format(CONN_TIMEOUT))
+                print('[INFO] Unclear whether {0} is affected or not'+IP)
+                return "Maybe"
+                break
+
+            except KeyboardInterrupt:
+                print('[ERROR] User ended script early with Control + C')
+                break
+    conn.close()
+# -- end talos script
 def parser_cisco_SIE(nmap_results):
     error=0
     #checking if got all snmp info
@@ -24,7 +86,7 @@ def parser_cisco_SIE(nmap_results):
     errorcheck2=info in test
     
     if errorcheck1:
-        #if evertyging is fine parse
+        #if all snmp info is then parse
 	sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-sysdescr']
         split=sysdescr.split(",")
         check1="Software"
@@ -38,14 +100,14 @@ def parser_cisco_SIE(nmap_results):
                 part2=splits
         part22=part2.split("\n")
         part2=part22[0]
-        output_parser=" , "+host+" , "+part1+" , "+part2+"\n"
+        output_parser=" , "+host+" , "+part1+" , "+part2
     elif errorcheck2:
 	sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-info']
         sysdescr_list=sysdescr.splitlines()
-        output_parser=" , "+host+" , "+sysdescr_list[1]+" , no_version_info \n"
+        output_parser=" , "+host+" , "+sysdescr_list[1]+" , no_version_info "
 
     else:
-        output_parser=" , "+host+" , NO_snmp_info , no_version_info \n"
+        output_parser=" , "+host+" , NO_snmp_info , no_version_info"
     print(output_parser+"\n")
     return output_parser
 counter=1
@@ -79,18 +141,23 @@ with open(inputfile) as f:
                     else:
                         print(nm3._scan_result['scan'][host])
                 if r3=="open":
-                    counter_test=counter_test+1
-                    #print(counter_test)
-		    #start scan to get more detailed informaiton about target
-                    udpr=nm2.scan(host,'161',"-sU -sC ")
-                    udp_status=nm2._scan_result['scan'][host]['udp'][161]['state']
-                    if udp_status=="open":
-                        output=parser_cisco_SIE(nm2)
-                        counter_str=str(counter)
-                        fileout.write(counter_str+output)
-                        counter=counter+1
+                    vulne_checked=vuln_check(host)
+                    if vulne_checked=="Vulnerable" or vulne_checked=="Maybe":
+                        counter_test=counter_test+1
+                        #print(counter_test)
+	                #start scan to get more detailed informaiton about target
+                        udpr=nm2.scan(host,'161',"-sU -sC ")
+                        udp_status=nm2._scan_result['scan'][host]['udp'][161]['state']
+                        if udp_status=="open":
+                            output=parser_cisco_SIE(nm2)
+                            counter_str=str(counter)
+                            fileout.write(counter_str+output+" , "+vulne_checked+"\n")
+                            counter=counter+1
+                        else:
+                            fileout.write("x , "+host+" , Blocked_port_161 , "+vulne_checked+" \n")
                     else:
-                        fileout.write("x , "+host+" , Blocked_port_161 , \n")
+                        fileout.write("x , "+host+" , Not_Vulnerable \n")
+
 print(counter)
 print(counter_test)
 print(counter_rescan)
