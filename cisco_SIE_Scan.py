@@ -1,4 +1,7 @@
 #!/usr/bin/python
+# Author: Piotr Kaminski 
+# Date: 2018-04-26
+
 import sys, getopt
 import nmap
 import socket
