@@ -1,11 +1,14 @@
 # Python_nmap
-Script was write to improve nmap scanning for providing clear reporting without needed to parser or formating it after scan finished. Script also improve scanning time and realiabity by devided it for the scan phases:
+Script has been  write to provide clear reporting output, without needed to parser or formating it after scan finished. Script also improve realiabity by devided it for the scan phases:
 
-Global scann of interesting port
-Rescaning when there are probility of missing packets
-Checking if switch is vulnerable using Talos Cisco code :https://github.com/Cisco-Talos/smi_check
-Gathering more information about device when port is opened and device is vulnerable.
-Usage: ./cisco_SIE_Scan.py <list of subnets/ip>
+1. Global scans of interesting port
+2. Rescaning when there are probility of missing packets
+3. Checking if switch is vulnerable using Talos Cisco code :https://github.com/Cisco-Talos/smi_check
+4. Gathering more information about device when port is opened and device is vulnerable.
+
+
+Usage:
+ ./cisco_SIE_Scan.py <list of subnets/ip>
 
 Output:
 
