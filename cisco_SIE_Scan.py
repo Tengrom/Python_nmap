@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Author: Piotr Kaminski
-#Linkedin: www.linkedin.com/in/piotr-kaminski-1336b01
+#Linkedin: www.linkedin.com/in/piotr-kaminski-1336b012
 # Date: 2018-04-26
 
 import sys
@@ -36,7 +36,7 @@ if results.i == None or results.o == None:
     print 'Incorrect arguments'
     print 'Usage: cisco_SIE_Scan.py [-h] [-i in-file with subnets or IPs] [-o out-file]'
     sys.exit()
-#subnets or ip to scan 
+#subnets or ip to sca n 
 nm=nmap.PortScanner()
 #UDP scan
 nm2=nmap.PortScanner()
