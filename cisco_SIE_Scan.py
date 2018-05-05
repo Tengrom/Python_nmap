@@ -1,5 +1,6 @@
 #!/usr/bin/python
-# Author: Piotr Kaminski 
+# Author: Piotr Kaminski
+#Linkedin: www.linkedin.com/in/piotr-kaminski-1336b01
 # Date: 2018-04-26
 
 import sys
