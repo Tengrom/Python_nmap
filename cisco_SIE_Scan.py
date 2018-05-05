@@ -23,8 +23,8 @@ except ImportError:
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('-i', metavar='in-file', type=argparse.FileType('rt'))
-parser.add_argument('-o', metavar='out-file', type=argparse.FileType('wt'))
+parser.add_argument('-i', metavar='in-file', required=True, type=argparse.FileType('rt'))
+parser.add_argument('-o', metavar='out-file', required=True, type=argparse.FileType('wt'))
 
 try:
     results = parser.parse_args()
@@ -32,10 +32,6 @@ try:
     print 'Output file:', results.o
 except IOError, msg:
     parser.error(str(msg))
-if results.i == None or results.o == None:
-    print 'Incorrect arguments'
-    print 'Usage: cisco_SIE_Scan.py [-h] [-i in-file with subnets or IPs] [-o out-file]'
-    sys.exit()
 #subnets or ip to sca n 
 nm=nmap.PortScanner()
 #UDP scan
