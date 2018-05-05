@@ -31,14 +31,10 @@ try:
     print 'Output file:', results.o
 except IOError, msg:
     parser.error(str(msg))
-
-
-
-
-
-
-
-
+if results.i == None or results.o == None:
+    print 'Incorrect arguments'
+    print 'Usage: cisco_SIE_Scan.py [-h] [-i in-file with subnets or IPs] [-o out-file]'
+    sys.exit()
 #subnets or ip to scan 
 nm=nmap.PortScanner()
 #UDP scan
