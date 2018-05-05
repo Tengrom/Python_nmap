@@ -177,7 +177,7 @@ with results.i as f:
                             counter=counter+1
                         else:
                             counter_str=str(counter)
-                            results.o.write(counter_str+" , "+host+" , Blocked_port_161 , "+vulne_checked+" \n")
+                            results.o.write(counter_str+" , "+host+" , Blocked_port_161 , , "+vulne_checked+" \n")
                             counter=counter+1
                     else:
                         results.o.write("x , "+host+" , Not_Vulnerable \n")
