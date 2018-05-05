@@ -2,16 +2,44 @@
 # Author: Piotr Kaminski 
 # Date: 2018-04-26
 
-import sys, getopt
+import sys
 import nmap
 import socket
-if len (sys.argv) != 3:
-    print "Usage: python <input file name> <output file name>"
-    sys.exit (1)
-inputfile=sys.argv[1]
-outputfile=sys.argv[2]
-fileout=open(outputfile,"w")
-#range scan 
+
+
+
+
+
+halt = False
+
+try:
+    import argparse
+except ImportError:
+    print('Missing needed module: argparse')
+    halt = True
+    if halt:
+        sys.exit()
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-i', metavar='in-file', type=argparse.FileType('rt'))
+parser.add_argument('-o', metavar='out-file', type=argparse.FileType('wt'))
+
+try:
+    results = parser.parse_args()
+    print 'Input file:', results.i
+    print 'Output file:', results.o
+except IOError, msg:
+    parser.error(str(msg))
+
+
+
+
+
+
+
+
+#subnets or ip to scan 
 nm=nmap.PortScanner()
 #UDP scan
 nm2=nmap.PortScanner()
@@ -79,16 +107,13 @@ def vuln_check(IP):
     conn.close()
 # -- end talos script
 def parser_cisco_SIE(nmap_results):
-    error=0
     #checking if got all snmp info
     test=nmap_results._scan_result['scan'][host]['udp'][161]    
     test=str(test)
     sysdescr="snmp-sysdescr"
     info="snmp-info"
-    errorcheck1=sysdescr in test
-    errorcheck2=info in test
     
-    if errorcheck1:
+    if sysdescr in test:
         #if all snmp info is then parse
 	sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-sysdescr']
         split=sysdescr.split(",")
@@ -104,7 +129,7 @@ def parser_cisco_SIE(nmap_results):
         part22=part2.split("\n")
         part2=part22[0]
         output_parser=" , "+host+" , "+part1+" , "+part2
-    elif errorcheck2:
+    elif info in test:
 	sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-info']
         sysdescr_list=sysdescr.splitlines()
         output_parser=" , "+host+" , "+sysdescr_list[1]+" , no_version_info "
@@ -116,10 +141,9 @@ def parser_cisco_SIE(nmap_results):
 counter=1
 counter_test=1
 counter_rescan=1
-print(inputfile)
-fileout.write(inputfile+"\n")
-with open(inputfile) as f:
-        for line in f:
+
+with results.i as f:
+    for line in f:
             print("Start scanning: " + line)
             #Starting scan for 4786 SIE port on cisco devices
             nm.scan(line,'4786',"-sS")
@@ -134,7 +158,7 @@ with open(inputfile) as f:
                     test_scan_finished=nm3.all_hosts()
                     test_scan_finished_len=len(test_scan_finished)
                     if test_scan_finished_len==0:
-                        fileout.write("e , "+host+" , Scan_error , \n")
+                        results.o.write("e , "+host+" , Scan_error , \n")
                     else:
                         r3=nm3._scan_result['scan'][host]['tcp'][4786]['state']
                         if r3=="open":
@@ -152,16 +176,18 @@ with open(inputfile) as f:
                         if udp_status=="open":
                             output=parser_cisco_SIE(nm2)
                             counter_str=str(counter)
-                            fileout.write(counter_str+output+" , "+vulne_checked+"\n")
+                            results.o.write(counter_str+output+" , "+vulne_checked+"\n")
                             counter=counter+1
                         else:
-                            fileout.write("x , "+host+" , Blocked_port_161 , "+vulne_checked+" \n")
+                            counter_str=str(counter)
+                            results.o.write(counter_str+" , "+host+" , Blocked_port_161 , "+vulne_checked+" \n")
+                            counter=counter+1
                     else:
-                        fileout.write("x , "+host+" , Not_Vulnerable \n")
+                        results.o.write("x , "+host+" , Not_Vulnerable \n")
 
 print(counter)
 print(counter_test)
 print(counter_rescan)
-fileout.close()
-
+results.o.close()
+results.i.close()
 
