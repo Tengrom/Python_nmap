@@ -8,7 +8,8 @@ Script has been  write to provide clear reporting output, without needed to pars
 
 
 Usage:
- ./cisco_SIE_Scan.py <list of subnets/ip>
+
+ cisco_SIE_Scan.py [-h] [-i in-file with subnets or IPs] [-o out-file]
 
 Output:
 
