@@ -8,9 +8,6 @@ import nmap
 import socket
 
 
-
-
-
 halt = False
 
 try:
@@ -99,7 +96,7 @@ def vuln_check(IP):
                 break
     conn.close()
 # -- end talos script
-def parser_cisco_SIE(nmap_results):
+def parser_cisco_snmp(nmap_results):
     #checking if got all snmp info
     test=nmap_results._scan_result['scan'][host]['udp'][161]    
     test=str(test)
@@ -113,11 +110,9 @@ def parser_cisco_SIE(nmap_results):
         check1="Software"
         check2="Version"
         for splits in split:
-            if_check1=check1 in splits
-            if_check2=check2 in splits
-            if if_check1:
+            if check1 in splits:
                 part1=splits
-            if if_check2:
+            if check2 in splits:
                 part2=splits
         part22=part2.split("\n")
         part2=part22[0]
@@ -144,7 +139,7 @@ with results.i as f:
                 testhost=nm._scan_result['scan'][host]
                 r2=nm._scan_result['scan'][host]['status']['state']
                 r3=nm._scan_result['scan'][host]['tcp'][4786]['state']
-                # when scanning large subnets, some ack packed are missing and it is marking open ports us filtered, need to scan againg it per ip is working fine
+                # when scanning large subnets, some ack can get lost and it is marking open ports us filtered, need to scan againg it per ip is working fine
                 if r2=="up" and r3=="filtered":
                     nm3=nmap.PortScanner()
                     nm3.scan(host,'4786',"-sS")
@@ -167,7 +162,7 @@ with results.i as f:
                         udpr=nm2.scan(host,'161',"-sU -sC ")
                         udp_status=nm2._scan_result['scan'][host]['udp'][161]['state']
                         if udp_status=="open":
-                            output=parser_cisco_SIE(nm2)
+                            output=parser_cisco_snmp(nm2)
                             counter_str=str(counter)
                             results.o.write(counter_str+output+" , "+vulne_checked+"\n")
                             counter=counter+1
