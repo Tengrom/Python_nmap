@@ -5,7 +5,7 @@ List of scripts:
 1. cisco_SIE_Scan.py
 2. SMB_info_scanner.py
 
-===================================================================================================
+=========================
 Script: cisco_SIE_Scan.py
 
 
@@ -30,7 +30,7 @@ Output:
 
 
 
-===================================================================================================
+===========================
 Script: SMB_info_scanner.py
 
 1. Global scans of interesting port
@@ -44,10 +44,15 @@ SMB_info_scanner.py [-h] -i in-file -o out-file [-u Username] [-p Password]
 Output:
 
 IP , Computer_name , OS , Domain , Workgroup , CPE , SMB_Dialects , SMBv1_enabled
+
 192.168.1.103 , Server1 , Windows Server 2003 3790 Service Pack 2 (Windows Server 2003 5.2) ,  , Home\\x00 , cpe:/o:microsoft:windows_server_2003::sp2 ,      NT LM 0.12 (SMBv1) [dangerous , Enabled
+
 192.168.1.105 , host1 , Windows XP (Windows 2000 LAN Manager) ,  , Home\\x00 , cpe:/o:microsoft:windows_xp::- ,      NT LM 0.12 (SMBv1) [dangerous , Enabled
+
 192.168.1.106 , host2 , Windows XP (Windows 2000 LAN Manager) ,  , Home\\x00 , cpe:/o:microsoft:windows_xp::- ,      NT LM 0.12 (SMBv1) [dangerous , Enabled
+
 192.168.1.112 , host3 , Windows XP (Windows 2000 LAN Manager) ,  , Home\\x00 , cpe:/o:microsoft:windows_xp::- ,      NT LM 0.12 (SMBv1) [dangerous , Enabled
+
 192.168.1.40 , Server2 , Windows Server 2008 R2 Standard 7601 Service Pack 1 (Windows Server 2008 R2 Standard 6.1) , home.local.intra ,  , cpe:/o:microsoft:windows_server_2008::sp1 ,      NT LM 0.12 (SMBv1) [dangerous    2.02    2.10 , Enabled
 
 
