@@ -17,8 +17,8 @@ except ImportError:
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', metavar='in-file', required=True, type=argparse.FileType('rt'))
 parser.add_argument('-o', metavar='out-file', required=True, type=argparse.FileType('wt'))
-parser.add_argument('-u', metavar='Username', action='store' , dest='username', help='Username what will be used to discovery and accessing network share . By defult it is guest username' )
-parser.add_argument('-p', metavar='Password', action='store' , dest='password', help='Password what will be used to discovery and accessing network share . By defult it is empty' )
+parser.add_argument('-u', metavar='Username', action='store' , dest='username', help='Username what will be used to discovery and accessing SMB . By defult it is guest username' )
+parser.add_argument('-p', metavar='Password', action='store' , dest='password', help='Password what will be used to discovery and accessing SMB . By defult it is empty' )
 
 global args
 args = parser.parse_args()
@@ -75,7 +75,6 @@ def smb_info_parser(nmap_results,host_ip):
     Check_for_attributes=('OS:','Computer name:','Domain name:','Workgroup','CPE:','dialects:','SMBv1')
     Network_class=SMB_host(host_ip)
     output_list.append(Network_class)
-#Check_share_type=('Not a file share','STYPE_IPC_HIDDEN')
     for output in test:
         test_output=str(output)
         part22=test_output.split("\\n")
@@ -132,9 +131,7 @@ def smb_info_parser(nmap_results,host_ip):
 counter=1
 counter_test=1
 counter_rescan=1
-counter_open_share=0
 counter_str=""
-Check_share_type=('Not a file share','STYPE_IPC_HIDDEN')
 Check_read = "READ"
 head_line="IP , Computer_name , OS , Domain , Workgroup , CPE , SMB_Dialects , SMBv1_enabled\n"
 results.o.write(head_line)
@@ -173,7 +170,7 @@ with results.i as f:
 			    counter_rescan=counter_rescan+1
 			counter_rescan_str=str(counter_rescan)
                         print(host+" rescanned "+counter_rescan_str)
-						#if ports are open start network share list script						
+						#if ports are open start smb discovery  script						
                 print(host+" , "+r2+" , "+r3+" , "+r4+" ,")
                 if r2=="up" and (r3 == "open" or r4 == "open"):
                     print("---------------------start scan --------------------------------")
@@ -196,7 +193,7 @@ with results.i as f:
                         output_scan=nm2._scan_result['scan'][host]
                          
                         output_scan=str(output_scan)
-                        #check if script network share list was able to got any info 
+                        #check if script smb discovery script  list was able to got any info 
 			scan_results_test="hostscript"
                         if scan_results_test in output_scan:
                             output=smb_info_parser(nm2,host)
