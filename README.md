@@ -4,7 +4,7 @@ Scripts has been  write to provide clear reporting output, without needed to par
 List of scripts:
 1. cisco_SIE_Scan.py - Discovery Cisco Smart Installer vulnerability and gathering SNMP info from vulnerable device
 2. SMB_info_scanner.py - Discovery device with open 445 and 139 ports and gathering OS and SMB protocols info 
-3. SMB_network_share_scanner.py - Discovery device with open 445 and 139 ports listing all shares on device and listing max 10 files from each dscovered share
+3. Network_share_scanner.py - Discovery device with open 445 and 139 ports listing all shares on device and listing max 10 files from each dscovered share
 
 =========================
 
