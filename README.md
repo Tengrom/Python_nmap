@@ -60,7 +60,7 @@ Output:
 
 ===========================
 
-Script:Newrok_share_Scanner.py
+Script:Network_share_Scanner.py
 
 1. Global scans of interesting port
 2. Rescaning when there are probility of missing packets
