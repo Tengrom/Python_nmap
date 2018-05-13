@@ -1,5 +1,5 @@
 # Python_nmap
-Scripts has been  write to provide clear reporting output, without needed to parser or formating it after scan finished. Script also improve realiabity by devided it for the scan phases.
+Scripts has been  write to provide clear report, without needed to parser or formating it after scan finished. Script also improve realiabity by devided it for the scan phases and some other additional  functions.
 
 List of scripts:
 1. cisco_SIE_Scan.py - Discovery Cisco Smart Installer vulnerability and gathering SNMP info from vulnerable device
