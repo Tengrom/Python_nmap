@@ -81,6 +81,7 @@ def files_folders_parser(nmap_results):
 
 def Network_share_parser(nmap_results):
     output_list=[]
+    id_str_check="'id'"
     test=nmap_results._scan_result['scan'][host]['hostscript']
     Check_for_attributes=('Type:','warning:','Anonymous access:','Current user access:','Comment:','Users:','Max Users:','Path:','account_used:','{\'output\':')
     #Check_share_type=('Not a file share','STYPE_IPC_HIDDEN')
@@ -92,11 +93,19 @@ def Network_share_parser(nmap_results):
                 if (Check_for_attributes[3] in parts):
                     parts_split=parts.split(":")
                     Current_user_access=parts_split[1].strip()
+                    if id_str_check in Current_user_access:
+                        id_str_check_split=Current_user_access.split(",")
+                        Current_user_access=id_str_check_split[0]
                     Network_class.add_user_access(Current_user_access)
                
                 elif (Check_for_attributes[2] in parts):
                     parts_split=parts.split(":")
                     Anonymous_access=parts_split[1].strip()
+                    
+                    if id_str_check in Anonymous_access:
+                        id_str_check_split=Anonymous_access.split(",")
+                        Anonymous_access=id_str_check_split[0]
+
                     Network_class.add_anon_access(Anonymous_access)
                     
                 elif (Check_for_attributes[4] in parts):
