@@ -140,7 +140,7 @@ counter_open_share=0
 counter_str=""
 Check_share_type=('Not a file share','STYPE_IPC_HIDDEN')
 Check_read = ('READ','WRITE')
-head_line="IP , Share_name , Current_user_access , Anonymous_access , Path , Type , Comment , Detected files (max 10)\n"
+head_line="IP,Share_name,Current_user_access,Anonymous_access,Path,Type,Comment,Detected files (max 10)\n"
 results.o.write(head_line)
 
 with results.i as f:
@@ -170,14 +170,14 @@ with results.i as f:
 			test_scan_finished_len=len(test_scan_finished)
 			# Check if the host has not been  switched off in the middle of scan 
                         if test_scan_finished_len==0:
-                            results.o.write("e , "+host+" , "+port_str+" , Scan_error , \n")
+                            results.o.write("e,"+host+","+port_str+",Scan_error,\n")
 			elif r2=="up":
 			    r3=nm3._scan_result['scan'][host]['tcp'][port]['state']
 			if r3=="open":
 			    counter_rescan=counter_rescan+1
 			    counter_rescan_str=str(counter_rescan)
 		print(host+ " rescanned "+counter_rescan_str)
-                print(host+" , "+r2+" , "+r3+" , "+r4+" , ")
+                print(host+","+r2+","+r3+","+r4+",")
 				#if ports are open start network share list script
                 if r2=="up" and (r3 == "open" or r4 == "open"):
                     print"---------------------start script scan--------------------------"
@@ -194,7 +194,7 @@ with results.i as f:
                     test_scan_finished_len=len(test_scan_finished)
 		    # Check if the host has not been  switched off in the middle of scan 
                     if test_scan_finished_len==0:
-                        results.o.write("e , "+host+" , "+port_str+" , Scan_error , \n")
+                        results.o.write("e,"+host+","+port_str+",Scan_error,\n")
                     else:
                         vulnerable=nm2._scan_result['scan'][host]
                     
@@ -227,7 +227,7 @@ with results.i as f:
 					test_scan_finished_len=len(test_scan_finished)
 					# if the server will be switched off 
                                         if test_scan_finished_len==0:
-                                            results.o.write("e , "+host+" , "+port_str+" , Scan_error , \n")
+                                            results.o.write("e,"+host+","+port_str+",Scan_error,\n")
                                         else:
                                             vulnerable=nm2._scan_result['scan'][host]
                                             vulnerable=str(vulnerable)
@@ -239,17 +239,17 @@ with results.i as f:
                                                 for lists2 in output2:                                   
                                                     if results.o2 != None:
                                                         print(lists2)
-                                                        results.o2.write(host+" , "+lists.name+" , "+lists2+"\n")
+                                                        results.o2.write(host+","+lists.name+","+lists2+"\n")
                                                         counter_share=counter_share+1
 
                                     counter_share_str=str(counter_share)
-                                    Network_share_list_to_file=host+" , "+lists.name+" , "+lists.user_access+" , "+lists.anon_access+" , "+lists.path+" , "+lists.share_type+" , "+lists.comment+" , "+counter_share_str+"\n"
+                                    Network_share_list_to_file=host+","+lists.name+","+lists.user_access+","+lists.anon_access+","+lists.path+","+lists.share_type+","+lists.comment+","+counter_share_str+"\n"
                                     print(Network_share_list_to_file)
                                     results.o.write(Network_share_list_to_file)
                                         
                         else:
-                            results.o.write(host+" , no_smb_info , \n")
-                    print(counter_str+" , "+host+" , "+port_str )
+                            results.o.write(host+",no_smb_info,\n")
+                    print(counter_str+","+host+","+port_str )
                     print("---------------------end script scan --------------------------")
 print("Number of host from with one has been received smb info:")
 print(counter)

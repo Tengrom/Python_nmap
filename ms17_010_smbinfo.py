@@ -1,7 +1,4 @@
 #!/usr/bin/python
-# Author: Piotr Kaminski
-#Linkedin: www.linkedin.com/in/piotr-kaminski-1336b012
-# Date: 2018-04-26
 import sys, getopt
 
 
@@ -20,8 +17,6 @@ except ImportError:
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', metavar='in-file', required=True, type=argparse.FileType('rt'))
 parser.add_argument('-o', metavar='out-file', required=True, type=argparse.FileType('wt'))
-parser.add_argument('-u', metavar='Username', action='store' , dest='username', help='Username what will be used to discovery and accessing SMB . By defult it is guest username' )
-parser.add_argument('-p', metavar='Password', action='store' , dest='password', help='Password what will be used to discovery and accessing SMB . By defult it is empty' )
 
 global args
 args = parser.parse_args()
@@ -136,7 +131,7 @@ counter_test=1
 counter_rescan=1
 counter_str=""
 Check_read = "READ"
-head_line="IP,Computer_name,OS,Domain,Workgroup,CPE,SMB_Dialects,SMBv1_enabled\n"
+head_line="IP,ms17_010_vulnerable,Computer_name,OS,Domain,Workgroup,CPE\n"
 results.o.write(head_line)
 
 with results.i as f:
@@ -182,10 +177,9 @@ with results.i as f:
                     else:
 			port_str = "139"
                     counter_test=counter_test+1
-                    if args.username==None or args.password==None:
-                        nm2.scan(host,port_str,"--script smb-os-discovery.nse,smb-protocols.nse ")
-                    else:
-                        nm2.scan(host,port_str,"--script smb-os-discovery.nse,smb-protocols.nse --script-args 'smbuser="+args.username+",smbpass="+args.password+"' ")
+                    nm2.scan(host,port_str,"--script smb-vuln-ms17-010 ")
+                    
+                    #nm2.scan(host,port_str,"--script smb-os-discovery.nse,smb-protocols.nse ")
                     test_scan_finished=nm2.all_hosts()
 		    test_scan_finished_len=len(test_scan_finished)
 					# Check if the host has not been  switched off in the middle of scan 
@@ -197,18 +191,34 @@ with results.i as f:
                          
                         output_scan=str(output_scan)
                         #check if script smb discovery script  list was able to got any info 
-			scan_results_test="hostscript"
+			scan_results_test="VULNERABLE"
                         if scan_results_test in output_scan:
-                            output=smb_info_parser(nm2,host)
-                            counter_str=str(counter)
-                            for lists in output:
-                               host_list=lists.ip+","+lists.Computer_name+","+lists.OS+","+lists.Domain+","+lists.Workgroup+","+lists.CPE+","+lists.Dialects+","+lists.SMBv1+"\n"
-                               print(host_list)
-                               results.o.write(host_list) 
-			       counter=counter+1
-                        else:
-                            print(host+",no_smb_info"+port_str) 
-                            results.o.write(host+",no_smb_info,"+port_str+"\n")
+
+                            nm2.scan(host,port_str,"--script smb-os-discovery.nse ")
+                            test_scan_finished=nm2.all_hosts()
+	        	    test_scan_finished_len=len(test_scan_finished)
+					# Check if the host has not been  switched off in the middle of scan 
+                            if test_scan_finished_len==0:
+                                results.o.write(host+",Scan_error,"+port_str+" \n")
+                                print(host+","+port_str+",Scan_error") 
+                            else:
+                                output_scan=nm2._scan_result['scan'][host]
+                         
+                                output_scan=str(output_scan)
+                                #check if script smb discovery script  list was able to got any info 
+			        scan_results_test="hostscript"
+                                if scan_results_test in output_scan:
+
+                                    output=smb_info_parser(nm2,host)
+                                    counter_str=str(counter)
+                                    for lists in output:
+                                        host_list=lists.ip+",VULNERABLE,"+lists.Computer_name+","+lists.OS+","+lists.Domain+","+lists.Workgroup+","+lists.CPE+"\n"
+                                        print(host_list)
+                                        results.o.write(host_list) 
+                                        counter=counter+1
+                                else:
+                                    print(host+",VULNERABLE,no_smb_info"+port_str) 
+                                    results.o.write(host+",VULNERABLE,no_smb_info,"+port_str+" \n")
                     print(counter_str+","+host+","+port_str)
                     print("---------------------end scan --------------------------------")
 print("Number of host from with one has been received smb info:")

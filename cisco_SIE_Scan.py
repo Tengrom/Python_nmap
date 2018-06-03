@@ -116,14 +116,14 @@ def parser_cisco_snmp(nmap_results):
                 part2=splits
         part22=part2.split("\n")
         part2=part22[0]
-        output_parser=" , "+host+" , "+part1+" , "+part2
+        output_parser=","+host+","+part1+","+part2
     elif info in test:
 	sysdescr=nmap_results._scan_result['scan'][host]['udp'][161]['script']['snmp-info']
         sysdescr_list=sysdescr.splitlines()
-        output_parser=" , "+host+" , "+sysdescr_list[1]+" , no_version_info "
+        output_parser=","+host+","+sysdescr_list[1]+",no_version_info"
 
     else:
-        output_parser=" , "+host+" , NO_snmp_info , no_version_info"
+        output_parser=","+host+",NO_snmp_info,no_version_info"
     print(output_parser+"\n")
     return output_parser
 counter=1
@@ -146,7 +146,7 @@ with results.i as f:
                     test_scan_finished=nm3.all_hosts()
                     test_scan_finished_len=len(test_scan_finished)
                     if test_scan_finished_len==0:
-                        results.o.write("e , "+host+" , Scan_error , \n")
+                        results.o.write("e,"+host+",Scan_error,\n")
                     else:
                         r3=nm3._scan_result['scan'][host]['tcp'][4786]['state']
                         if r3=="open":
@@ -164,14 +164,14 @@ with results.i as f:
                         if udp_status=="open":
                             output=parser_cisco_snmp(nm2)
                             counter_str=str(counter)
-                            results.o.write(counter_str+output+" , "+vulne_checked+"\n")
+                            results.o.write(counter_str+output+","+vulne_checked+"\n")
                             counter=counter+1
                         else:
                             counter_str=str(counter)
-                            results.o.write(counter_str+" , "+host+" , Blocked_port_161 , , "+vulne_checked+" \n")
+                            results.o.write(counter_str+","+host+",Blocked_port_161,,"+vulne_checked+"\n")
                             counter=counter+1
                     else:
-                        results.o.write("x , "+host+" , Not_Vulnerable \n")
+                        results.o.write("x,"+host+",Not_Vulnerable \n")
 
 print(counter)
 print(counter_test)
