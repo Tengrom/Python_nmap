@@ -23,11 +23,11 @@ args = parser.parse_args()
     
 try:
     results = parser.parse_args()
-    print 'Input file:', results.i
-    print 'Output file:', results.o
+    print('Input file:', results.i)
+    print('Output file:', results.o)
  
-except IOError, msg:
-    parser.error(str(msg))
+except IOError:
+    print("Parser error")
 
 
 #range scan 
@@ -44,8 +44,8 @@ class SMB_host:
         self.Domain=""
         self.Workgroup=""
         self.CPE=""
-	self.Dialects=""
-	self.SMBv1=""
+        self.Dialects=""
+        self.SMBv1=""
     def add_OS(self, OS):
         self.OS=OS
  
@@ -102,8 +102,8 @@ def smb_info_parser(nmap_results,host_ip):
                     parts_split=parts.split(":",1)
                     CPE_part=parts_split[1].strip()
                     Network_class.add_CPE(CPE_part)
-				
-		elif (Check_for_attributes[5] in parts):
+                
+                elif (Check_for_attributes[5] in parts):
                     output_str=str(output)
                     #print(output_str)
 
@@ -121,8 +121,8 @@ def smb_info_parser(nmap_results,host_ip):
                             Dialects_part_fin=Dialects_part_fin+dialect_parts
 
                     Network_class.add_Dialects(Dialects_part_fin)
-				
-        	elif (Check_for_attributes[6] in parts):
+		    
+                elif (Check_for_attributes[6] in parts):
                     #print(parts)
                     Network_class.add_SMBv1("Enabled")
     return output_list
@@ -146,42 +146,42 @@ with results.i as f:
                 testhost=nm._scan_result['scan'][host]
                 r2=nm._scan_result['scan'][host]['status']['state']
                 r3=nm._scan_result['scan'][host]['tcp'][445]['state']
-		r4=nm._scan_result['scan'][host]['tcp'][139]['state']
+                r4=nm._scan_result['scan'][host]['tcp'][139]['state']
                 # when scanning large subnets, some ack can miss and it is marking open ports us filtered, need to scan againg it per ip is working fine
                 if r2=="up" and (r3 == "filtered" or r4 == "filtered") :
                     if not (r3 == "open" or r4 == "open"):
-                        nm3=nmap.PortScanner()			
-			if r3 == "open" :
-			    port = 445
-			else:
-			    port = 139
+                        nm3=nmap.PortScanner()
+                        if r3 == "open" :
+                            port = 445
+                        else:
+                            port = 139
                         port_str=str(port)
-			nm3.scan(host,port_str,"-sS")
-			test_scan_finished=nm3.all_hosts()
-			test_scan_finished_len=len(test_scan_finished)
+                        nm3.scan(host,port_str,"-sS")
+                        test_scan_finished=nm3.all_hosts()
+                        test_scan_finished_len=len(test_scan_finished)
 						# Check if the server has not been switched off in the middle of scan 
                         if test_scan_finished_len==0:
                             results.o.write(host+",Scan_error,"+port_str+" \n")
-			elif r2=="up":
-			    r3=nm3._scan_result['scan'][host]['tcp'][port]['state']
-			if r3=="open":
-			    counter_rescan=counter_rescan+1
-			counter_rescan_str=str(counter_rescan)
+                        elif r2=="up":
+                            r3=nm3._scan_result['scan'][host]['tcp'][port]['state']
+                        if r3=="open":
+                            counter_rescan=counter_rescan+1
+                        counter_rescan_str=str(counter_rescan)
                         print(host+" rescanned "+counter_rescan_str)
 						#if ports are open start smb discovery  script						
                 print(host+","+r2+","+r3+","+r4+",")
                 if r2=="up" and (r3 == "open" or r4 == "open"):
                     print("---------------------start scan --------------------------------")
-		    if r3 == "open" :
-			port_str = "445"
+                    if r3 == "open" :
+                        port_str = "445"
                     else:
-			port_str = "139"
+                        port_str = "139"
                     counter_test=counter_test+1
-                    nm2.scan(host,port_str,"--script smb-vuln-ms17-010 ")
+                    nm2.scan(host,port_str,"--script smb-vuln-ms17-010")
                     
                     #nm2.scan(host,port_str,"--script smb-os-discovery.nse,smb-protocols.nse ")
                     test_scan_finished=nm2.all_hosts()
-		    test_scan_finished_len=len(test_scan_finished)
+                    test_scan_finished_len=len(test_scan_finished)
 					# Check if the host has not been  switched off in the middle of scan 
                     if test_scan_finished_len==0:
                         results.o.write(host+",Scan_error,"+port_str+" \n")
@@ -191,12 +191,12 @@ with results.i as f:
                          
                         output_scan=str(output_scan)
                         #check if script smb discovery script  list was able to got any info 
-			scan_results_test="VULNERABLE"
+                        scan_results_test="VULNERABLE"
                         if scan_results_test in output_scan:
 
-                            nm2.scan(host,port_str,"--script smb-os-discovery.nse ")
+                            nm2.scan(host,port_str,"--script smb-os-discovery.nse")
                             test_scan_finished=nm2.all_hosts()
-	        	    test_scan_finished_len=len(test_scan_finished)
+                            test_scan_finished_len=len(test_scan_finished)
 					# Check if the host has not been  switched off in the middle of scan 
                             if test_scan_finished_len==0:
                                 results.o.write(host+",Scan_error,"+port_str+" \n")
@@ -206,7 +206,7 @@ with results.i as f:
                          
                                 output_scan=str(output_scan)
                                 #check if script smb discovery script  list was able to got any info 
-			        scan_results_test="hostscript"
+                                scan_results_test="hostscript"
                                 if scan_results_test in output_scan:
 
                                     output=smb_info_parser(nm2,host)
