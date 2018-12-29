@@ -1,18 +1,20 @@
-# Python_nmap
-Scripts has been  write to provide clear report, without needed to parser or formating it after scan finished. Script also improve realiabity by devided it for the scan phases and some other additional  functions.
+# Python nmap
+
+Scripts has been write to provide clear report, without needed to parser or formatting it after scan finished. Script also improve reliability  by scan phases and some other additional functions.
 
 List of scripts:
-1. cisco_SIE_Scan.py - Discovery Cisco Smart Installer vulnerability and gathering SNMP info from vulnerable device
-2. SMB_info_scanner.py - Discovery device with open 445 and 139 ports and gathering OS and SMB protocols info 
-3. Network_share_scanner.py - Discovery device with open 445 and 139 ports listing all shares on device and listing max 10 files from each dscovered share
+1.	cisco_SIE_Scan.py - Discovery Cisco Smart Installer vulnerability and gathering SNMP info from vulnerable device
+2.	SMB_info_scanner.py - Discovery devices with open 445 and 139 ports and gathering OS and SMB protocols info
+3.	Network_share_scanner.py - Discovery device with open 445 and 139 ports listing all shares on device and listing max 10 files from each discovered share
+
 
 =========================
 
-Script: cisco_SIE_Scan.py
+Script #1 : cisco_SIE_Scan.py
 
 
-1. Global scans of interesting port
-2. Rescaning when there are probility of missing packets
+1. Scanning for open interesting port
+2. Rescanning when there are probability of missing packets
 3. Checking if switch is vulnerable using Talos Cisco code :https://github.com/Cisco-Talos/smi_check
 4. Gathering more information about device when port is opened and device is vulnerable.
 
@@ -34,10 +36,10 @@ Output:
 
 ===========================
 
-Script: SMB_info_scanner.py
+Script #2: SMB_info_scanner.py
 
-1. Global scans of interesting port
-2. Rescaning when there are probility of missing packets
+1. Scanning for open interesting port
+2. Rescanning when there are probability of missing packets
 3. Gathering SMB information about device when port is opened.
 
 Usage:
@@ -60,7 +62,7 @@ Output:
 
 ===========================
 
-Script:Network_share_Scanner.py
+Script#3: Network_share_Scanner.py
 
 1. Global scans of interesting port
 2. Rescaning when there are probility of missing packets
