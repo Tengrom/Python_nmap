@@ -29,10 +29,10 @@ args = parser.parse_args()
     
 try:
     results = parser.parse_args()
-    print 'Input file:', results.i
-    print 'Output file:', results.o
-    print 'Output file for files and folders in share:', results.o2
-except IOError, msg:
+    print('Input file:', results.i)
+    print('Output file:', results.o)
+    print('Output file for files and folders in share:', results.o2)
+except:
     parser.error(str(msg))
 
 
@@ -155,36 +155,36 @@ with results.i as f:
                 testhost=nm._scan_result['scan'][host]
                 r2=nm._scan_result['scan'][host]['status']['state']
                 r3=nm._scan_result['scan'][host]['tcp'][445]['state']
-		r4=nm._scan_result['scan'][host]['tcp'][139]['state']
+                r4=nm._scan_result['scan'][host]['tcp'][139]['state']
                 # scanning large subnets scans some ack packed are missing and it is marking open ports us filtered, need to scan againg it per ip is working fine
                 if r2=="up" and (r3 == "filtered" or r4 == "filtered") :
                     if not (r3 == "open" or r4 == "open"):
-			nm3=nmap.PortScanner()			
-			if r3 == "open" :
-			    port = 445
-			else:
-			    port = 139
+                        nm3=nmap.PortScanner()			
+                        if r3 == "open" :
+                            port = 445
+                        else:
+                            port = 139
                         port_str=str(port)
-			nm3.scan(host,port_str,"-sS")
-			test_scan_finished=nm3.all_hosts()
-			test_scan_finished_len=len(test_scan_finished)
+                        nm3.scan(host,port_str,"-sS")
+                        test_scan_finished=nm3.all_hosts()
+                        test_scan_finished_len=len(test_scan_finished)
 			# Check if the host has not been  switched off in the middle of scan 
                         if test_scan_finished_len==0:
                             results.o.write("e,"+host+","+port_str+",Scan_error,\n")
-			elif r2=="up":
-			    r3=nm3._scan_result['scan'][host]['tcp'][port]['state']
-			if r3=="open":
-			    counter_rescan=counter_rescan+1
-			    counter_rescan_str=str(counter_rescan)
-		print(host+ " rescanned "+counter_rescan_str)
+                        elif r2=="up":
+                            r3=nm3._scan_result['scan'][host]['tcp'][port]['state']
+                        if r3=="open":
+                            counter_rescan=counter_rescan+1
+                            counter_rescan_str=str(counter_rescan)
+                print(host+ " rescanned "+counter_rescan_str)
                 print(host+","+r2+","+r3+","+r4+",")
 				#if ports are open start network share list script
                 if r2=="up" and (r3 == "open" or r4 == "open"):
-                    print"---------------------start script scan--------------------------"
+                    print("---------------------start script scan--------------------------")
                     if r3 == "open" :
-	                port_str = "445"
+                        port_str = "445"
                     else:
-			port_str = "139"
+                        port_str = "139"
                     counter_test=counter_test+1
                     if args.username==None or args.password==None:
                         nm2.scan(host,port_str,"-script smb-enum-shares.nse")
@@ -200,39 +200,39 @@ with results.i as f:
                     
                         vulnerable=str(vulnerable)
                         #check if script network share list was able to got any info 
-			vulnerable_test="hostscript"
+                        vulnerable_test="hostscript"
                         if vulnerable_test in vulnerable:
                             counter=counter+1
                             output=Network_share_parser(nm2)
                             counter_str=str(counter)
                             for lists in output:
                             
-			        counter_share=0
+                                counter_share=0
 				# If there is read file share , check is there are accesible files
-				if lists.share_type not in  Check_share_type: 
+                                if lists.share_type not in  Check_share_type: 
                                     
-				    if Check_read[0] in lists.user_access or Check_read[1] in lists.user_access:
-				        Access=True
-				    elif Check_read[0] in lists.anon_access or Check_read[1] in lists.anon_access:
-				        Access=True
-				    else:
-				        Access=False
+                                    if Check_read[0] in lists.user_access or Check_read[1] in lists.user_access:
+                                        Access=True
+                                    elif Check_read[0] in lists.anon_access or Check_read[1] in lists.anon_access:
+                                        Access=True
+                                    else:
+                                        Access=False
 						
-				    if Access:
+                                    if Access:
                                         if args.username==None or args.password==None:
                                             nm2.scan(host,port_str,"-script smb-ls.nse --script-args share="+lists.name)
                                         else:
                                             nm2.scan(host,port_str,"--script smb-ls.nse  --script-args 'smbuser="+args.username+",smbpass="+args.password+"',share="+lists.name)
-					test_scan_finished=nm2.all_hosts()
-					test_scan_finished_len=len(test_scan_finished)
+                                        test_scan_finished=nm2.all_hosts()
+                                        test_scan_finished_len=len(test_scan_finished)
 					# if the server will be switched off 
                                         if test_scan_finished_len==0:
                                             results.o.write("e,"+host+","+port_str+",Scan_error,\n")
                                         else:
                                             vulnerable=nm2._scan_result['scan'][host]
                                             vulnerable=str(vulnerable)
-                                            #check if script files and folder list got any info 
-					    vulnerable_test="FILENAME"
+                                            #check if script files and folder list got any info     
+                                            vulnerable_test="FILENAME"
                                             if vulnerable_test in vulnerable:
                                                 counter_open_share=counter_open_share+1
                                                 output2=files_folders_parser(nm2)
