@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import sys, getopt
-
+import re
 
 
 halt = False
@@ -70,62 +70,47 @@ class SMB_host:
 def smb_info_parser(nmap_results,host_ip):
     output_list=[]
     test=nmap_results._scan_result['scan'][host]['hostscript']
-    Check_for_attributes=('OS:','Computer name:','Domain name:','Workgroup','CPE:','dialects:','SMBv1')
     Network_class=SMB_host(host_ip)
     output_list.append(Network_class)
+
     for output in test:
-        test_output=str(output)
-        part22=test_output.split("\\n")
-        for parts in part22:
-            if any(attrib in parts for attrib in Check_for_attributes):
-                if (Check_for_attributes[0] in parts):
-                    parts_split=parts.split(":")
-                    OS_part=parts_split[1].strip()
-                    Network_class.add_OS(OS_part)
-               
-                elif (Check_for_attributes[1] in parts):
-                    parts_split=parts.split(":")
-                    Computer_name_part=parts_split[1].strip()
-                    Network_class.add_Computer_name(Computer_name_part)
-                    
-                elif (Check_for_attributes[2] in parts):
-                    parts_split=parts.split(":")
-                    Domain_part=parts_split[1].strip()
-                    Network_class.add_Domain(Domain_part)
-                    
-                elif (Check_for_attributes[3] in parts):
-                    parts_split=parts.split(":")
-                    Workgroup_part=parts_split[1].strip()
-                    Network_class.add_Workgroup(Workgroup_part)
-       
-                elif (Check_for_attributes[4] in parts):
-                    parts_split=parts.split(":",1)
-                    CPE_part=parts_split[1].strip()
-                    Network_class.add_CPE(CPE_part)
-                
-                elif (Check_for_attributes[5] in parts):
-                    output_str=str(output)
-                    #print(output_str)
+        if output['id'] == "smb-os-discovery":
+            OS_re = re.compile('(?<=OS:).*')
+            OS = OS_re.search(output['output'])
+            if OS:
+                OS=OS.group().strip()
+                Network_class.add_OS(OS)
+            Computer_name_re=re.compile('(?<=Computer name:).*')
+            Computer_name = Computer_name_re.search(output['output'])
+            if Computer_name:
+                Computer_name=Computer_name.group().strip()
+                Network_class.add_Computer_name(Computer_name)
+            Workgroup_re=re.compile('(?<=Workgroup:).*')
+            Workgroup = Workgroup_re.search(output['output'])
+            if Workgroup:
+                Workgroup=Workgroup.group().strip()
+                Network_class.add_Workgroup(Workgroup)
+            Domain_name_re=re.compile('(?<=Domain name:).*')
+            Domain_name = Domain_name_re.search(output['output'])
+            if Domain_name:
+                Domain_name=Domain_name.group().strip()
+                Network_class.add_Domain(Domain_name)
+            OS_CPE_re=re.compile('(?<=OS CPE:).*')
+            OS_CPE = OS_CPE_re.search(output['output'])
+            if OS_CPE:
+                OS_CPE=OS_CPE.group().strip()
+                Network_class.add_CPE(OS_CPE)
+        elif output['id'] == "smb-protocols":
+            dialects_re =  re.compile('\d\.\d\d')
+            dialects = dialects_re.findall(output['output'])
+            if dialects:
+                dialects='/'.join(dialects)
+                Network_class.add_Dialects(dialects)
+            if "SMBv1" in output['output']:
+                Network_class.add_SMBv1("Enabled")
 
-                    Dialects_part_fin=""
-                    parts_split=output_str.split(":")
-                    #print(parts_split)
-                    Dialects_part=parts_split[2].split("'")
-                    Dialects_small_part=Dialects_part[0].split("\\n")
-                    for dialect_parts in Dialects_small_part:
-                        if Check_for_attributes[6] in dialect_parts:
-                            dialect_parts_split=dialect_parts.split(",")
-                            Dialects_part_fin=Dialects_part_fin+dialect_parts_split[0]
-
-                        else:
-                            Dialects_part_fin=Dialects_part_fin+dialect_parts
-
-                    Network_class.add_Dialects(Dialects_part_fin)
-		    
-                elif (Check_for_attributes[6] in parts):
-                    #print(parts)
-                    Network_class.add_SMBv1("Enabled")
     return output_list
+    
 counter=1
 counter_test=1
 counter_rescan=1
