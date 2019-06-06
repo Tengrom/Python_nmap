@@ -152,10 +152,14 @@ problem_nb =
 
 Script#5: RDP_nmap_Metasploit.py
 
-1. Scanning for open interesting port
+1. Scanning of subnets or IPs from file  for open interesting port
 2. Rescanning when there are probability of missing packets
 3. Checking if device  is vulnerable using Metasploit cve_2019_0708_bluekeep
 4. Gathering more information about device when port is opened and device is vulnerable.
+
+Usage:
+
+RDP_nmap_Metasploit.py [-h] [-i in-file with subnets or IPs] 
 
 
 Script is using that library "https://github.com/DanMcInerney/pymetasploit3"
