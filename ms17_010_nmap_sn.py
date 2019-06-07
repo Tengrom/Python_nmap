@@ -101,7 +101,7 @@ def servicenow(Hostname,IP,Site,Domain,Workgroup,OS):
     new_record = {
                 'short_description': short_describtion,
                 'description': describtion,
-                #'assignment_group':'0f47328314ac0100c464ca1c2a709885',
+                #'assignment_group':'',
                 'caller_id': config['SN_wannacry']['caller_id'],
                 'category':  config['SN_wannacry']['category'],
 		'priority':'3 - Moderate',
