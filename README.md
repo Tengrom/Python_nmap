@@ -130,21 +130,14 @@ Script#4: ms17_010_nmap_sn.py
 
 Before usage Auto.cfg configuration file need to be created conating those informations:
 
-[DEFAULT]
-
-SNuser =
-
-SNpass =
-
-[SN_wannacry]
-
-problem_id =
-
-caller_id =
-
-category =
-
-problem_nb =
+	[DEFAULT]
+	SNuser =
+	SNpass =
+	[SN_wannacry]
+	problem_id =
+	caller_id =
+	category =
+	problem_nb =
 
 
 
