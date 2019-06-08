@@ -13,9 +13,11 @@ import time
 import sys
 import pysnow
 import configparser
-#import pymssql
+import re
+
+
 halt = False
-logging.basicConfig(filename='/var/log/ms17_010_SN.log',format='%(asctime)s %(message)s',level=logging.INFO)
+logging.basicConfig(name='/var/log/ms17_010_SN.log',format='%(asctime)s %(message)s',level=logging.INFO)
 try:
     import argparse
     import nmap
@@ -140,12 +142,6 @@ def servicenow(Hostname,IP,Site,Domain,Workgroup,OS):
         ticket_number=result['number']
     return ticket_number
 		
-EPOCH_AS_FILETIME = 116444736000000000  # January 1, 1970 as MS file time
-HUNDREDS_OF_NANOSECONDS = 10000000
-period = datetime.utcnow() - timedelta(days=30)
-def filetime_to_dt(ft):
-            return datetime.utcfromtimestamp((ft - EPOCH_AS_FILETIME) / HUNDREDS_OF_NANOSECONDS)
-        #print("yes")
 
 
 
