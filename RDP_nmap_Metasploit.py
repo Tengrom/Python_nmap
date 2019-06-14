@@ -256,7 +256,7 @@ with results.i as f:
                    
                     print(counter_str+","+host)
 
-output = c.consoles.console(console_number).destroy()
+output = c.consoles.destroy(console_number)
 
 print("Number of host from with one has been received smb info:")
 print(counter)
