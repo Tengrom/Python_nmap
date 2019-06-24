@@ -18,7 +18,7 @@ import configparser
 import re
 #import pymssql
 halt = False
-logging.basicConfig(filename='/var/log/ms17_010_SN.log',format='%(asctime)s %(message)s',level=logging.INFO)
+logging.basicConfig(filename='/var/log/nmap_scanner_servicenow.log',format='%(asctime)s %(message)s',level=logging.INFO)
 try:
     import argparse
     import nmap
