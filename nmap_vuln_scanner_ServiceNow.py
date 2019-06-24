@@ -1,8 +1,6 @@
 #!/usr/bin/python
-#Script is scanning for alive device with open port 139 and 445
-# if any of ports is open scritp is scanning device for ms17_010 vulns
-# if device is vulnerable it is scaning it smb information to get name , os version and domainor workgroup
-# then script is checking if there is wannacry ticket for the name of devices if not it is create new one 
+#Discovery devices vulnerable for selected nmap script for example ms17_010 (Wannacry) and gathering SMB info about OS and domain .
+#Script is checking if there is already open ticket for that host in ServiceNow if not, it will create new.
 
 import sys, getopt
 import csv
