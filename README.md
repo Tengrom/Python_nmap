@@ -7,8 +7,8 @@ List of scripts:
 2.	SMB_info_scanner.py - Discovery devices with open 445 and 139 ports and gathering OS and SMB protocols info.
 3.	Network_share_scanner.py - Discovery device with open 445 and 139 ports listing all shares on device and listing max 10 files from each discovered share.
 4.	nmap_vuln_scanner_ServiceNow.py - Discovery devices vulnerable for selected nmap script for example ms17_010 (Wannacry) and gathering SMB info about OS and domain . Script is checking if there is already open  ticket for that host in ServiceNow  if not, it will create new.
-5.	RDP_nmap_Metasploit.py - Discovery devices by scanning of subnets or IPs from file  for vulnerable for CVE-2019-0708 "BlueKeep" using Metasploit scanner "cve_2019_0708_bluekeep" if devices is vulnerable script will gather  SMB info about OS and domain .
-
+5.	nmap_Metasploit_scanner.py - 
+6.	RDP_nmap_metasploit_threads.py  - Discovery devices by scanning of subnets or IPs from file  for vulnerable for CVE-2019-0708 "BlueKeep" using Metasploit scanner "cve_2019_0708_bluekeep" if devices is vulnerable script will gather  SMB info about OS and domain .Script is using 10 threads to speed up scan . 
 
 
 =========================
@@ -143,22 +143,29 @@ Before usage Auto.cfg configuration file need to be created conating those infor
 	vuln_script = smb-vuln-ms17-010
 
 
+===========================
+
+Script#5: nmap_Metasploit_scanner.py - 
+	
+
+
 
 ===========================
 
-Script#5: RDP_nmap_Metasploit.py
+Script#6: RDP_nmap_metasploit_threads.py
 
 1. Scanning of subnets or IPs from file  for open interesting port
 2. Rescanning when there are probability of missing packets
 3. Checking if device  is vulnerable using Metasploit cve_2019_0708_bluekeep
 4. Gathering more information about device when port is opened and device is vulnerable.
-
+5. Script is use 10 threads to speed up scanning 
 Usage:
 
 RDP_nmap_Metasploit.py [-h] [-i in-file with subnets or IPs] 
 
 
 Script is using that library "https://github.com/DanMcInerney/pymetasploit3"
+Multiprocessing was based on very good described blog : "https://stackabuse.com/parallel-processing-in-python/"
 
 Before use run metasploit and run msfrpcd:
 
