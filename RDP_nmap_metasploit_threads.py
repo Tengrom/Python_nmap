@@ -12,12 +12,12 @@ import time
 
 ip = "127.0.0.1"
 user = "msf"
-passwd = "VPh6dDPI"
+passwd = ""
 halt = False
 
 # stworzenie polaczenia
 
-logging.basicConfig(filename='/var/log/msf_rdp_vuln.log',format='%(asctime)s %(message)s',level=logging.INFO)
+logging.basicConfig(filename='/var/log/msf_rdp_vuln_threads.log',format='%(asctime)s %(message)s',level=logging.INFO)
 halt = False
 
 try:
