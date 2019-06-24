@@ -6,7 +6,7 @@ List of scripts:
 1.	cisco_SIE_Scan.py - Discovery Cisco Smart Installer vulnerability and gathering SNMP info from vulnerable device.
 2.	SMB_info_scanner.py - Discovery devices with open 445 and 139 ports and gathering OS and SMB protocols info.
 3.	Network_share_scanner.py - Discovery device with open 445 and 139 ports listing all shares on device and listing max 10 files from each discovered share.
-4.	ms17_010_nmap_sn.py - Discovery devices vulnerable for ms17_010 (Wannacry) ang gathering SMB info about OS and domain . Script is checking if there is already open  ticket for that host in ServiceNow  if not, it will create new.
+4.	nmap_vuln_scanner_sn.py - Discovery devices vulnerable for selected nmap script for example ms17_010 (Wannacry) and gathering SMB info about OS and domain . Script is checking if there is already open  ticket for that host in ServiceNow  if not, it will create new.
 5.	RDP_nmap_Metasploit.py - Discovery devices by scanning of subnets or IPs from file  for vulnerable for CVE-2019-0708 "BlueKeep" using Metasploit scanner "cve_2019_0708_bluekeep" if devices is vulnerable script will gather  SMB info about OS and domain .
 
 
@@ -119,11 +119,11 @@ Output:
 	192.168.1.83 , \\\\192.168.1.83\\Public_share , <DIR>  2014-12-29 02:19:52  US\\test all	
 ===========================
 
-Script#4: ms17_010_nmap_sn.py
+Script#4: nmap_vuln_scanner_sn.py
 
 1. Scanning for open interesting port
 2. Rescanning when there are probability of missing packets
-3. Checking if device  is vulnerable using nmap script smb-vuln-ms17-010
+3. Checking if device  is vulnerable using nmap script for example smb-vuln-ms17-010, to change it just type another nse script name 
 4. Gathering more information about device when port is opened and device is vulnerable.
 5. Checking if there is already open ticket for discovered host in ServiceNow using "Pysnow".
 6. If there isn't any ticket it create new one
@@ -138,6 +138,9 @@ Before usage Auto.cfg configuration file need to be created conating those infor
 	caller_id =
 	category =
 	problem_nb =
+	[nmap]
+	port_scan = 445,139
+	vuln_script = smb-vuln-ms17-010
 
 
 
