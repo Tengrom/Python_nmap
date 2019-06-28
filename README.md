@@ -7,7 +7,7 @@ List of scripts:
 2.	SMB_info_scanner.py - Discovery devices with open 445 and 139 ports and gathering OS and SMB protocols info.
 3.	Network_share_scanner.py - Discovery device with open 445 and 139 ports listing all shares on device and listing max 10 files from each discovered share.
 4.	nmap_vuln_scanner_ServiceNow.py - Discovery devices vulnerable for selected nmap script for example ms17_010 (Wannacry) and gathering SMB info about OS and domain . Script is checking if there is already open  ticket for that host in ServiceNow  if not, it will create new.
-5.	nmap_Metasploit_scanner.py - Discovery devices using nmap and scaning them using Metasploit vulnerability scanner ,
+5.	Nmap_Metasploit_Scanner_Vuln.py - Discovery devices using nmap and scaning them using Metasploit vulnerability scanner ,
 if devices is vulnerable script will gather SMB info about OS and domain .
 List of IP are recorded in metasploit DB.
 6.	RDP_nmap_metasploit_threads.py  - Discovery devices by scanning of subnets or IPs from file  for vulnerable for CVE-2019-0708 "BlueKeep" using Metasploit scanner "cve_2019_0708_bluekeep" if devices is vulnerable script will gather  SMB info about OS and domain .Script is using 10 threads to speed up scan . 
