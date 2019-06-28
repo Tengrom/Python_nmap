@@ -10,8 +10,7 @@ Steps:
     2. Rescanning when there are probability of missing packets
     3. Checking if device is vulnerable using Metasploit modules listed in provided file
     4. Gathering more information about device using nmap script port is opened and device is vulnerable.
-    5. Script is checking site name  from /root/script/site_lists base on discovered ip
-    6. Results are recorded in Metasploit DB and in provided output file
+    5. Results are recorded in Metasploit DB and in provided output file
 
 Usage:
     Nmap_Metasploit_Scanner_Vuln.py [-h] -i in-subnets_list_csv -l in-vuln_list_csv -o out-file
