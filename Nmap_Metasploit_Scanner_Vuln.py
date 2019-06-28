@@ -83,25 +83,6 @@ try:
 except IOError:
     print("Parser error")
 
-def sites_count(local_ip):
-    '''
-    Function is searching name of the site base on ip
-    '''
-    site_res = ""
-    site_file_path = "/root/script/sites_list.csv"
-    with open(site_file_path, newline='', encoding='UTF-8', errors='ignore') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-        for local_row in spamreader:
-            value = local_row[3]+'/'+local_row[4]
-            parsered_local_ip = ipaddress.ip_address(local_ip)
-            try:
-                parsered_ip_network = ipaddress.ip_network(value, False)
-            except:
-                parsered_ip_network = ""
-
-            if (local_row[3] != "Network") and (parsered_local_ip in parsered_ip_network):
-                site_res = local_row[5]
-    return site_res
 GLOBAL_COUNTER_RESCAN = 0
 #Port can change
 GLOBAL_C = MsfRpcClient(MSF_PASSWD, port=55552)
@@ -319,8 +300,7 @@ def nmap_scan(ip_to_check, vuln_name):
     test_scan_finished_len = len(test_scan_finished)
     # Check if the host has not been  switched off in the middle of scan
     if test_scan_finished_len == 0:
-        sites_results = sites_count(ip_to_check)
-        to_file = ip_to_check+","+str(vuln_name)+","+sites_results+",Scan_error \n"
+        to_file = ip_to_check+","+str(vuln_name)+",Scan_error \n"
         GLOBAL_RESULTS_PARSER.o.write(to_file)
         print(to_file)
     else:
@@ -331,10 +311,8 @@ def nmap_scan(ip_to_check, vuln_name):
         if scan_results_test in output_scan:
             local_output = smb_info_parser(ip_to_check, nm2)
             for lists in local_output:
-                sites_results = sites_count(lists.local_ip)
                 host_list = lists.local_ip+","
                 host_list = host_list+str(vuln_name)+","
-                host_list = host_list+sites_results+","
                 host_list = host_list+lists.computer_name+","
                 host_list = host_list+lists.computer_os+","
                 host_list = host_list+lists.computer_domain+","
@@ -343,9 +321,8 @@ def nmap_scan(ip_to_check, vuln_name):
                 print(host_list)
                 GLOBAL_RESULTS_PARSER.o.write(host_list)
         else:
-            sites_results = sites_count(ip_to_check)
             print(ip_to_check+","+str(vuln_name)+",no_smb_info")
-            to_file = ip_to_check+","+str(vuln_name)+","+sites_results+",no_smb_info \n"
+            to_file = ip_to_check+","+str(vuln_name)+",no_smb_info \n"
             GLOBAL_RESULTS_PARSER.o.write(to_file)
     print("End SMB scan ".center(190, "-"))
 
@@ -386,7 +363,7 @@ def nmap_sync_scan(local_line, local_row):
          #if ports are open start smb discovery  scripit
         print(host+","+host_status+","+port_statu+",")
         if host_status == "up" and port_statu == "open":
-            try:
+            ry:
                 host_vulnerable = msf_scan(host, local_row)
             except Exception as msf_error:
                 logging.error(" error  msf scan : %s  %s ", str(msf_error), host_str)
@@ -402,7 +379,7 @@ def nmap_sync_scan(local_line, local_row):
                     print('\x1b[0;31;40m'+"ERROR NMAP SCAN : "+str(msf_error)+'\x1b[0m')
 
 logging.info("Scan started")
-HEAD_LINE = "IP,vulnerable service,site,computer_name,OS,Domain,workgroup_host,CPE\n"
+HEAD_LINE = "IP,vulnerable service,computer_name,OS,Domain,workgroup_host,CPE\n"
 GLOBAL_RESULTS_PARSER.o.write(HEAD_LINE)
 LINES = csv.reader(GLOBAL_RESULTS_PARSER.l, delimiter=',', quotechar='|')
 for row in LINES:
