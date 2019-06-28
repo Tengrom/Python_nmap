@@ -46,7 +46,6 @@ from __future__ import print_function
 import sys
 import re
 import csv
-import ipaddress
 import logging
 import time
 from pymetasploit3.msfrpc import MsfRpcClient
@@ -97,7 +96,6 @@ def msf_init():
     console_output = GLOBAL_C.consoles.console(local_console_number).read()
     while not console_output['data']:
         console_output = GLOBAL_C.consoles.console(local_console_number).read()
-    local_output = GLOBAL_C.consoles.list
     GLOBAL_C.consoles.console(local_console_number).write('db_status')
     busy_value = GLOBAL_C.consoles.console(local_console_number).is_busy()
     while busy_value is True:
@@ -362,7 +360,7 @@ def nmap_sync_scan(local_line, local_row):
          #if ports are open start smb discovery  scripit
         print(host+","+host_status+","+port_statu+",")
         if host_status == "up" and port_statu == "open":
-            ry:
+            try:
                 host_vulnerable = msf_scan(host, local_row)
             except Exception as msf_error:
                 logging.error(" error  msf scan : %s  %s ", str(msf_error), host_str)
