@@ -53,7 +53,7 @@ from pymetasploit3.msfrpc import MsfRpcClient
 MSF_PASSWD = ""
 
 # stworzenie polaczenia
-LOG_FILE_PATH = '/var/log/msf_rdp_vuln.log'
+LOG_FILE_PATH = '/var/log/msf_vuln.log'
 logging.basicConfig(filename=LOG_FILE_PATH, format='%(asctime)s %(message)s', level=logging.INFO)
 HALT = False
 try:
