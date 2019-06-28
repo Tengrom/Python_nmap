@@ -10,7 +10,7 @@ List of scripts:
 5.	Nmap_Metasploit_Scanner_Vuln.py - Discovery devices using nmap and scaning them using Metasploit vulnerability scanner ,
 if devices is vulnerable script will gather SMB info about OS and domain .
 List of IP are recorded in metasploit DB.
-6.	RDP_nmap_metasploit_threads.py  - Discovery devices by scanning of subnets or IPs from file  for vulnerable for CVE-2019-0708 "BlueKeep" using Metasploit scanner "cve_2019_0708_bluekeep" if devices is vulnerable script will gather  SMB info about OS and domain .Script is using 10 threads to speed up scan . 
+6.	RDP_nmap_metasploit_threads.py  - Discovery devices by scanning of subnets or IPs from file  and scanning them against   CVE-2019-0708 "BlueKeep" using Metasploit scanner "cve_2019_0708_bluekeep" if devices is vulnerable script will gather  SMB info about OS and domain .Script is using 10 threads to speed up scan . 
 
 
 =========================
