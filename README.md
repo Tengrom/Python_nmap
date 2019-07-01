@@ -9,8 +9,8 @@ List of scripts:
 4.	nmap_vuln_scanner_ServiceNow.py - Discovery devices vulnerable for selected nmap script for example ms17_010 (Wannacry) and gathering SMB info about OS and domain . Script is checking if there is already open  ticket for that host in ServiceNow  if not, it will create new.
 5.	Nmap_Metasploit_Scanner_Vuln.py - Discovery devices using nmap and scaning them using Metasploit vulnerability scanner ,
 if devices is vulnerable script will gather SMB info about OS and domain .
-List of IP are recorded in metasploit DB.
-6.	RDP_nmap_metasploit_threads.py  - Discovery devices by scanning of subnets or IPs from file  and scanning them against   CVE-2019-0708 "BlueKeep" using Metasploit scanner "cve_2019_0708_bluekeep" if devices is vulnerable script will gather  SMB info about OS and domain .Script is using 10 threads to speed up scan . 
+List of vulnerable  IP are recorded in metasploit DB.
+6.	Nmap_Metasploit_Scanner_Vuln_Threads.py  - Quick scanner to discovery devices by scanning of subnets or IPs from file  and scanning them against vulns for example like  CVE-2019-0708 "BlueKeep" using Metasploit scanner "cve_2019_0708_bluekeep" if devices is vulnerable script will gather  SMB info about OS and domain .Script is using multiple  threads to speed up scan . Lists of vulnerable devices are recorded in csv file . 
 
 
 =========================
@@ -156,8 +156,7 @@ Steps:
     2. Rescanning when there are probability of missing packets
     3. Checking if device is vulnerable using Metasploit modules listed in provided file
     4. Gathering more information about device using nmap script port is opened and device is vulnerable.
-    5. Script is checking site name  from /root/script/site_lists base on discovered ip
-    6. Results are recorded in Metasploit DB and in provided output file
+    5. Results are recorded in Metasploit DB and in provided output file
 
 Usage:
 
@@ -166,7 +165,7 @@ Nmap_Metasploit_Scanner_Vuln.py [-h] -i in-subnets_list_csv -l in-vuln_list_csv 
 Example of subnets_list_csv:
 
 	10.10.10.10
-        192.168.0.024
+        192.168.0.0/24
 
 Example of vuln_list_csv with structure,
 
@@ -196,23 +195,55 @@ password type in the script in variable MSF_PASSWD
 
 ===========================
 
-Script#6: RDP_nmap_metasploit_threads.py
+Script#6:  Nmap_Metasploit_Scanner_Vuln_Threads.py
 
-1. Scanning of subnets or IPs from file  for open interesting port
-2. Rescanning when there are probability of missing packets
-3. Checking if device  is vulnerable using Metasploit cve_2019_0708_bluekeep
-4. Gathering more information about device when port is opened and device is vulnerable.
-5. Script is use 10 threads to speed up scanning 
+Quick multithread scanner. Discovery devices using nmap and scaning them using Metasploit vulnerability scanner ,
+if devices is vulnerable script will gather SMB info about OS and domain.
+Errors and script infos are recorded in /var/log/msf_rdp_vuln_threads.log
+
+
+Steps:
+
+    1. Scanning of subnets or IPs from file for open interesting port
+    2. Rescanning when there are probability of missing packets
+    3. Checking if device is vulnerable using Metasploit modules listed in provided file
+    4. Gathering more information about device using nmap script port is opened and device is vulnerable.
+    5. Results are recorded in Metasploit DB and in provided output file
+
 Usage:
 
-RDP_nmap_Metasploit.py [-h] [-i in-file with subnets or IPs] 
+Nmap_Metasploit_Scanner_Vuln.py [-h] -i in-subnets_list_csv -l in-vuln_list_csv -o out-file
 
+Example of subnets_list_csv:
+
+	10.10.10.10
+        192.168.0.0/24
+
+Example of vuln_list_csv with structure,
+
+	<port to scan>,<path to metasploit module>,< cve or ms in module name>:
+        3389,auxiliary/scanner/rdp/cve_2019_0708_bluekeep,CVE-2019-0708
+        445,auxiliary/scanner/smb/smb_ms17_010,MS17-010
+
+To be sure that module will be discovered by script run:
+
+	'search path:auxiliary/scanner/rdp/cve_2019_0708_bluekeep type:auxiliary name:CVE-2019-0708'
+
+in metasploit console
 
 Script is using that library "https://github.com/DanMcInerney/pymetasploit3"
+
+Before use: run metasploit and msfrpc :
+
+
+	msfrpcd -P yourpassword -S
+
+password type in the script in variable MSF_PASSWD	
+
+
+
 Multiprocessing was based on very good described blog : "https://stackabuse.com/parallel-processing-in-python/"
 
-Before use run metasploit and run msfrpcd:
 
-msfrpcd -P yourpassword -S
 
 
