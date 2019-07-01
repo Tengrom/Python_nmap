@@ -1,16 +1,16 @@
 # Python nmap
 
-Scripts has been write to provide clear report, without needed to parser or formatting it after scan finished. Script also improve reliability  by scan phases and some other additional functions.
+Scripts are example of use of python nmap and possibility to integrate it with other python module like Metasploit or ServiceNow. Alone it can provide clear report, without needed to parser or formatting it after scan finished. Script also improve speed and reliability by scan phases and some other additional functions.
 
 List of scripts:
 1.	cisco_SIE_Scan.py - Discovery Cisco Smart Installer vulnerability and gathering SNMP info from vulnerable device.
 2.	SMB_info_scanner.py - Discovery devices with open 445 and 139 ports and gathering OS and SMB protocols info.
 3.	Network_share_scanner.py - Discovery device with open 445 and 139 ports listing all shares on device and listing max 10 files from each discovered share.
-4.	nmap_vuln_scanner_ServiceNow.py - Discovery devices vulnerable for selected nmap script for example ms17_010 (Wannacry) and gathering SMB info about OS and domain . Script is checking if there is already open  ticket for that host in ServiceNow  if not, it will create new.
-5.	Nmap_Metasploit_Scanner_Vuln.py - Discovery devices using nmap and scaning them using Metasploit vulnerability scanner ,
-if devices is vulnerable script will gather SMB info about OS and domain .
-List of vulnerable  IP are recorded in metasploit DB.
-6.	Nmap_Metasploit_Scanner_Vuln_Threads.py  - Quick scanner to discovery devices by scanning of subnets or IPs from file  and scanning them against vulns for example like  CVE-2019-0708 "BlueKeep" using Metasploit scanner "cve_2019_0708_bluekeep" if devices is vulnerable script will gather  SMB info about OS and domain .Script is using multiple  threads to speed up scan . Lists of vulnerable devices are recorded in csv file . 
+4.	nmap_vuln_scanner_ServiceNow.py - Discovery devices vulnerable for selected nmap script for example ms17_010 (Wannacry) and gathering SMB info about OS and domain . Script is checking if there is already open ticket for that host in ServiceNow if not, it will create new.
+5.	Nmap_Metasploit_Scanner_Vuln.py - Discovery devices using nmap and scaning them using Metasploit vulnerability scanner , if devices is vulnerable script will gather SMB info about OS and domain . List of vulnerable IP are recorded in Metasploit DB.
+6.	Nmap_Metasploit_Scanner_Vuln_Threads.py – Very Quick and Fast  scanner to discovery devices by scanning of subnets or IPs from file and scanning them against vulns for example like CVE-2019-0708 "BlueKeep" using Metasploit modules . If devices is vulnerable script will gather SMB info about OS and domain .Script is using multiple threads to speed up scan . Lists of vulnerable devices are recorded in csv file .
+
+
 
 
 =========================
