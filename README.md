@@ -18,10 +18,10 @@ List of scripts:
 Script #1 : cisco_SIE_Scan.py
 
 
-1. Scanning for open interesting port
+1. Scanning for open SMI port on network device 
 2. Rescanning when there are probability of missing packets
 3. Checking if switch is vulnerable using Talos Cisco code :https://github.com/Cisco-Talos/smi_check
-4. Gathering more information about device when port is opened and device is vulnerable.
+4. Gathering more information about device  using SNMP when port is opened and device is vulnerable.
 
 
 Usage:
@@ -69,10 +69,10 @@ Output:
 
 Script#3: Network_share_Scanner.py
 
-1. Global scans of interesting port
+1. Global scans of open SMB ports 
 2. Rescaning when there are probility of missing packets
-3. Gathering list of network  shares on device
-4. Gathering list of file accessible on accessible  share 
+3. Gathering list of network  shares on devices
+4. Gathering list of file accessible on open share 
 
 Usage:
 
