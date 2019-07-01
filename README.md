@@ -165,7 +165,7 @@ Nmap_Metasploit_Scanner_Vuln.py [-h] -i in-subnets_list_csv -l in-vuln_list_csv 
 Example of subnets_list_csv:
 
 	10.10.10.10
-        192.168.0.0/24
+	192.168.0.0/24
 
 Example of vuln_list_csv with structure,
 
@@ -217,7 +217,7 @@ Nmap_Metasploit_Scanner_Vuln.py [-h] -i in-subnets_list_csv -l in-vuln_list_csv 
 Example of subnets_list_csv:
 
 	10.10.10.10
-        192.168.0.0/24
+	192.168.0.0/24
 
 Example of vuln_list_csv with structure,
 
