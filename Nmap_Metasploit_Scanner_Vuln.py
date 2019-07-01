@@ -18,7 +18,7 @@ Usage:
     Example of subnets_list_csv:
 
         10.10.10.10
-        192.168.0.024
+        192.168.0.0/24
 
     Example of vuln_list_csv with structure,
     <port to scan>,<path to metasploit module>,< cve or ms in module name>:
