@@ -1,8 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 '''
     Quick multithread scanner. Discovery devices using nmap and scaning them using Metasploit vulnerability scanner ,
 if devices is vulnerable script will gather SMB info about OS and domain.
-Errors and script infos are recorded in /var/log/msf_rdp_vuln_threads.log
+Errors and script infos are recorded in /var/log/msf_vuln_threads.log
 
 Steps:
     1. Scanning of subnets or IPs from file for open interesting port
@@ -50,7 +50,7 @@ from pymetasploit3.msfrpc import MsfRpcClient
 MSF_PASSWD = ""
 
 # stworzenie polaczenia
-LOG_FILE_PATH = '/var/log/msf_rdp_vuln_threads.log'
+LOG_FILE_PATH = '/var/log/msf_vuln_threads.log'
 logging.basicConfig(filename=LOG_FILE_PATH, format='%(asctime)s %(message)s', level=logging.INFO)
 HALT = False
 try:
@@ -165,7 +165,7 @@ def smb_info_parser(host_ip, nm2):
             if computer_name:
                 computer_name = computer_name.group().strip()
                 network_class.add_computer_name(computer_name)
-            regex = re.compile('(?<=Workgroup_host:).*')
+            regex = re.compile('(?<=Workgroup:).*')
             workgroup_host = regex.search(local_output['output'])
             if workgroup_host:
                 workgroup_host = workgroup_host.group().strip()
