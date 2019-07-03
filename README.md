@@ -141,8 +141,8 @@ Steps:
 
 Usage:
     Nmap_Vuln_Scanner_ServiceNow.py [-h] -i in-subnets_list_csv -l in-vuln_list_csv -o out-file
-
-    Example of subnets_list_csv:
+    
+Example of subnets_list_csv:
 
         10.10.10.10
         192.168.0.0/24
@@ -152,8 +152,8 @@ Usage:
 
         139;445,smb-vuln-ms17-010,ms17-010
 
-    Before use: create configuration file in /root/script/Auto.cfg:
-    Default part of config contain credentionals to ServiceNow, second(nmap) details to create ticket in ServiceNow
+Before use: create configuration file in /root/script/Auto.cfg:
+Default part of config contain credentionals to ServiceNow, second(nmap) details to create ticket in ServiceNow
 
         [DEFAULT]
         SNuser = some_one
