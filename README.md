@@ -194,7 +194,7 @@ Example of vuln_list_csv with structure,
 <port to scan>,<path to metasploit module>,< cve or ms in module name>:
 
 	3389,auxiliary/scanner/rdp/cve_2019_0708_bluekeep,CVE-2019-0708
-        445,auxiliary/scanner/smb/smb_ms17_010,MS17-010
+	445,auxiliary/scanner/smb/smb_ms17_010,MS17-010
 
 To be sure that module will be discovered by script run:
 
@@ -246,7 +246,7 @@ Example of vuln_list_csv with structure,
 <port to scan>,<path to metasploit module>,< cve or ms in module name>:
 
 	3389,auxiliary/scanner/rdp/cve_2019_0708_bluekeep,CVE-2019-0708
-        445,auxiliary/scanner/smb/smb_ms17_010,MS17-010
+	445,auxiliary/scanner/smb/smb_ms17_010,MS17-010
 
 To be sure that module will be discovered by script run:
 
