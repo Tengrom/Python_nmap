@@ -6,7 +6,7 @@ List of scripts:
 1.	cisco_SIE_Scan.py - Discovery Cisco Smart Installer vulnerability and gathering SNMP info from vulnerable device.
 2.	SMB_info_scanner.py - Discovery devices with open 445 and 139 ports and gathering OS and SMB protocols info.
 3.	Network_share_scanner.py - Discovery device with open 445 and 139 ports listing all shares on device and listing max 10 files from each discovered share.
-4.	nmap_vuln_scanner_ServiceNow.py - Discovery devices vulnerable for selected nmap script for example ms17_010 (Wannacry) and gathering SMB info about OS and domain . Script is checking if there is already open ticket for that host in ServiceNow if not, it will create new.
+4.	Nmap_vuln_scanner_ServiceNow.py - Discovery devices vulnerable for selected nmap script for example ms17_010 (Wannacry) and gathering SMB info about OS and domain . Script is checking if there is already open ticket for that host in ServiceNow if not, it will create new.
 5.	Nmap_Metasploit_Scanner_Vuln.py - Discovery devices using nmap and scaning them using Metasploit vulnerability scanner , if devices is vulnerable script will gather SMB info about OS and domain . List of vulnerable IP are recorded in Metasploit DB.
 6.	Nmap_Metasploit_Scanner_Vuln_Threads.py – Very Quick and Fast  scanner to discovery devices by scanning of subnets or IPs from file and scanning them against vulns for example like CVE-2019-0708 "BlueKeep" using Metasploit modules . If devices is vulnerable script will gather SMB info about OS and domain .Script is using multiple threads to speed up scan . Lists of vulnerable devices are recorded in csv file .
 
@@ -121,28 +121,50 @@ Output:
 	192.168.1.83 , \\\\192.168.1.83\\Public_share , <DIR>  2014-12-29 02:19:52  US\\test all	
 ===========================
 
-Script#4: nmap_vuln_scanner_ServiceNow.py
+Script#4: Nmap_vuln_scanner_ServiceNow.py
 
-1. Scanning for open interesting port
-2. Rescanning when there are probability of missing packets
-3. Checking if device  is vulnerable using nmap script for example smb-vuln-ms17-010, to change it just type another nse script name 
-4. Gathering more information about device when port is opened and device is vulnerable.
-5. Checking if there is already open ticket for discovered host in ServiceNow using "Pysnow".
-6. If there isn't any ticket it create new one
+    Discovery devices using nmap and scaning them using nmap script to check if are vulnerable,
+if devices is vulnerable script will gather SMB info about OS and domain . After detection of vulnerable device script will check if there is ticket in SeviceNow , if not it will create new one or if ticket has been resolved it will reopen it .
 
-Before usage Auto.cfg configuration file need to be created conating those informations:
+Errors and script infos are recorded in /var/log/nmap_vuln_sn.log
 
-	[DEFAULT]
-	SNuser =
-	SNpass =
-	[SN_wannacry]
-	problem_id =
-	caller_id =
-	category =
-	problem_nb =
-	[nmap]
-	port_scan = 445,139
-	vuln_script = smb-vuln-ms17-010
+Steps:
+    1. Scanning of subnets or IPs from file for open interesting port
+    2. Rescanning when there are probability of missing packets
+    3. Checking if device is vulnerable using nmap scripts in provided file
+    4. Gathering more information about device using nmap script port is opened and device is vulnerable.
+    5. Script is checking site name  from /root/script/site_lists base on discovered ip
+    7. After detection of vulnerable device script will check if there is ticket in SeviceNow , if not it will create new one or if ticket has been resolved it will reopen it .
+    8. Results are recorded in csv
+
+
+Usage:
+    Nmap_Vuln_Scanner_ServiceNow.py [-h] -i in-subnets_list_csv -l in-vuln_list_csv -o out-file
+
+    Example of subnets_list_csv:
+
+        10.10.10.10
+        192.168.0.0/24
+
+    Example of vuln_list_csv with structure,
+    <port to scan>,<path to metasploit module>,< cve or ms in module name>:
+
+        139;445,smb-vuln-ms17-010,ms17-010
+
+    Before use: create configuration file in /root/script/Auto.cfg:
+    Default part of config contain credentionals to ServiceNow, second(nmap) details to create ticket in ServiceNow
+
+        [DEFAULT]
+        SNuser = some_one
+        SNpass = strong_password_complex
+        SNinstance = devsomething
+        [nmap]
+        problem_id = 5bc1c9b44f9e2w22cb22w2ww2210c73e
+        caller_id = 5we222bf5d22www2d412eb53d22f2de2
+        category = Virus / Malware
+        problem_nb = PRB2222222
+        assignment_group = 0f47328314ww0100w464ww1w2w709885
+
 
 
 ===========================
