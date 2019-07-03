@@ -147,8 +147,8 @@ Example of subnets_list_csv:
         10.10.10.10
         192.168.0.0/24
 
-    Example of vuln_list_csv with structure,
-    <port to scan>,<nmap script name >,< cve or ms >:
+Example of vuln_list_csv with structure,
+<port to scan>,<nmap script name >,< cve or ms >:
 
         139;445,smb-vuln-ms17-010,ms17-010
 
@@ -191,9 +191,9 @@ Example of subnets_list_csv:
 	192.168.0.0/24
 
 Example of vuln_list_csv with structure,
+<port to scan>,<path to metasploit module>,< cve or ms in module name>:
 
-	<port to scan>,<path to metasploit module>,< cve or ms in module name>:
-        3389,auxiliary/scanner/rdp/cve_2019_0708_bluekeep,CVE-2019-0708
+	3389,auxiliary/scanner/rdp/cve_2019_0708_bluekeep,CVE-2019-0708
         445,auxiliary/scanner/smb/smb_ms17_010,MS17-010
 
 To be sure that module will be discovered by script run:
@@ -243,9 +243,9 @@ Example of subnets_list_csv:
 	192.168.0.0/24
 
 Example of vuln_list_csv with structure,
+<port to scan>,<path to metasploit module>,< cve or ms in module name>:
 
-	<port to scan>,<path to metasploit module>,< cve or ms in module name>:
-        3389,auxiliary/scanner/rdp/cve_2019_0708_bluekeep,CVE-2019-0708
+	3389,auxiliary/scanner/rdp/cve_2019_0708_bluekeep,CVE-2019-0708
         445,auxiliary/scanner/smb/smb_ms17_010,MS17-010
 
 To be sure that module will be discovered by script run:
