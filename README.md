@@ -123,7 +123,7 @@ Output:
 
 Script#4: Nmap_vuln_scanner_ServiceNow.py
 
-    Discovery devices using nmap and scaning them using nmap script to check if are vulnerable,
+Discovery devices using nmap and scaning them using nmap script to check if are vulnerable,
 if devices is vulnerable script will gather SMB info about OS and domain . After detection of vulnerable device script will check if there is ticket in SeviceNow , if not it will create new one or if ticket has been resolved it will reopen it .
 
 Errors and script infos are recorded in /var/log/nmap_vuln_sn.log
