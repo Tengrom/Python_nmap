@@ -129,6 +129,7 @@ if devices is vulnerable script will gather SMB info about OS and domain . After
 Errors and script infos are recorded in /var/log/nmap_vuln_sn.log
 
 Steps:
+    
     1. Scanning of subnets or IPs from file for open interesting port
     2. Rescanning when there are probability of missing packets
     3. Checking if device is vulnerable using nmap scripts in provided file
