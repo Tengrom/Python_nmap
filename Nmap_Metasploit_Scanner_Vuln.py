@@ -190,7 +190,7 @@ def smb_info_parser(host_ip, nm2):
             if computer_name:
                 computer_name = computer_name.group().strip()
                 network_class.add_computer_name(computer_name)
-            regex = re.compile('(?<=Workgroup_host:).*')
+            regex = re.compile('(?<=Workgroup:).*')
             workgroup_host = regex.search(local_output['output'])
             if workgroup_host:
                 workgroup_host = workgroup_host.group().strip()
