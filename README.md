@@ -170,7 +170,7 @@ Usage:
 
 ===========================
 
-**Script#5: Nmap_Metasploit_Scanner_Vuln.py **
+**Script#5: Nmap_Metasploit_Scanner_Vuln.py**
 
 Discovery devices using nmap and scaning them using Metasploit vulnerability scanner , if devices is vulnerable script will gather SMB info about OS and domain . List of IP are recorded in metasploit DB. Errors and script infos are recorded in /var/log/msf_vuln.log
 Steps:
