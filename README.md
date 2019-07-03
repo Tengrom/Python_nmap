@@ -15,7 +15,7 @@ List of scripts:
 
 =========================
 
-Script #1 : cisco_SIE_Scan.py
+**Script #1 : cisco_SIE_Scan.py**
 
 
 1. Scanning for open SMI port on network device 
@@ -41,7 +41,7 @@ Output:
 
 ===========================
 
-Script #2: SMB_info_scanner.py
+**Script #2: SMB_info_scanner.py**
 
 1. Scanning for open interesting port
 2. Rescanning when there are probability of missing packets
@@ -67,7 +67,7 @@ Output:
 
 ===========================
 
-Script#3: Network_share_Scanner.py
+**Script#3: Network_share_Scanner.py**
 
 1. Global scans of open SMB ports 
 2. Rescaning when there are probility of missing packets
@@ -121,7 +121,7 @@ Output:
 	192.168.1.83 , \\\\192.168.1.83\\Public_share , <DIR>  2014-12-29 02:19:52  US\\test all	
 ===========================
 
-Script#4: Nmap_vuln_scanner_ServiceNow.py
+**Script#4: Nmap_vuln_scanner_ServiceNow.py**
 
 Discovery devices using nmap and scaning them using nmap script to check if are vulnerable,
 if devices is vulnerable script will gather SMB info about OS and domain . After detection of vulnerable device script will check if there is ticket in SeviceNow , if not it will create new one or if ticket has been resolved it will reopen it .
@@ -170,7 +170,7 @@ Usage:
 
 ===========================
 
-Script#5: Nmap_Metasploit_Scanner_Vuln.py 
+**Script#5: Nmap_Metasploit_Scanner_Vuln.py **
 
 Discovery devices using nmap and scaning them using Metasploit vulnerability scanner , if devices is vulnerable script will gather SMB info about OS and domain . List of IP are recorded in metasploit DB. Errors and script infos are recorded in /var/log/msf_vuln.log
 Steps:
@@ -218,7 +218,7 @@ password type in the script in variable MSF_PASSWD
 
 ===========================
 
-Script#6:  Nmap_Metasploit_Scanner_Vuln_Threads.py
+**Script#6:  Nmap_Metasploit_Scanner_Vuln_Threads.py**
 
 Quick multithread scanner. Discovery devices using nmap and scaning them using Metasploit vulnerability scanner ,
 if devices is vulnerable script will gather SMB info about OS and domain.
