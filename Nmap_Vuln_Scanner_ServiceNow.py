@@ -9,9 +9,8 @@ Steps:
     2. Rescanning when there are probability of missing packets
     3. Checking if device is vulnerable using nmap scripts in provided file
     4. Gathering more information about device using nmap script port is opened and device is vulnerable.
-    5. Script is checking site name  from /root/script/site_lists base on discovered ip
-    7. After detection of vulnerable device script will check if there is ticket in SeviceNow , if not it will create new one or if ticket has been resolved it will reopen it . 
-    8. Results are recorded in csv 
+    5. After detection of vulnerable device script will check if there is ticket in SeviceNow , if not it will create new one or if ticket has been resolved it will reopen it . 
+    6. Results are recorded in csv 
     
 
 Usage:
@@ -48,7 +47,6 @@ from __future__ import print_function
 import sys
 import re
 import csv
-import ipaddress
 import logging
 import time
 import configparser
@@ -97,7 +95,7 @@ SN_USERNAME = CONFIG['DEFAULT']['SNuser']
 SN_PASSWORD = CONFIG['DEFAULT']['SNpass']
 SN_INSTANCES = CONFIG['DEFAULT']['SNinstance']
 
-def servicenow(computer_hostname, computer_ip, site_location, computer_domain, computer_workgroup, computer_os):
+def servicenow(computer_hostname, computer_ip, computer_domain, computer_workgroup, computer_os):
     '''
     Function is checking if there is already ticket for device if now create new one. If ticket is resolve it will reopen it if device is still vulnerable
     '''
@@ -106,7 +104,7 @@ def servicenow(computer_hostname, computer_ip, site_location, computer_domain, c
     incident = pysnow_c.resource(api_path='/table/incident')
     query_pysnow = 'problem_id='+CONFIG['nmap']['problem_id']+'^short_descriptionLIKE '+computer_hostname+' ^ORdescriptionLIKE '+computer_hostname+' '
     response = incident.get(query=query_pysnow)
-    short_describtion = "Vulnerability  for WannaCry  for IP: "+computer_ip+" , Site: "+site_location+" , Computer Name: "+computer_hostname +" , Domain or workgoup: "+computer_domain+computer_workgroup+" , OS :"+computer_os
+    short_describtion = "Vulnerability  for WannaCry  for IP: "+computer_ip+" , Computer Name: "+computer_hostname +" , Domain or workgoup: "+computer_domain+computer_workgroup+" , OS :"+computer_os
     describtion = "Computer is vulnerable. "
     new_record = {
         'short_description': short_describtion,
@@ -329,7 +327,7 @@ def nmap_sync_scan(local_line, local_row):
             if port_state == "filtered":
                 port_filtered = str(port_nr)
 	# when scanning large complex subnets, some ack can miss and it is marking open ports us filtered, need to scan againg it per ip is working fine. In normal enviroment it can be removed
-        if host_status == "up" and port_filtered != "" and port_str == "":
+       	if host_status == "up" and port_filtered != "" and port_str == "":
             for port_nr in host_tcp:
                 port_nr_str = str(port_nr)
                 port_state = local_nm._scan_result['scan'][host]['tcp'][port_nr]['state']
@@ -342,13 +340,14 @@ def nmap_sync_scan(local_line, local_row):
                         logging.info(host+",Scan_error,"+port_nr_str)
                     else:
                         r4_rescan = local_nm3._scan_result['scan'][host]['tcp']
-                        for port_nr_rescan in r4_rescan:
-                            port_state = local_nm3._scan_result['scan'][host]['tcp'][port_nr_rescan]['state']
+
+                        if port_nr_str in str(r4_rescan):
+                            port_state = local_nm3._scan_result['scan'][host]['tcp'][port_nr]['state']
                             if port_state == "open":
-                                port_str = str(port_nr_rescan)
+                                port_str = str(port_nr)
                                 print("rescanned "+str(host) +" "+port_str)
-                                GLOBAL_COUNTER_RESCAN = GLOBAL_COUNTER_RESCAN+1
-         #if ports are open start smb discovery  scripit
+                                GLOBAL_COUNTER_RESCAN = GLOBAL_COUNTER_RESCAN+1 
+        #if ports are open start smb discovery  scripit
         print(host+","+host_status+","+port_state+",")
         if host_status == "up" and port_state == "open":
             local_nm2.scan(host, port_str, "--script "+local_row[1])
