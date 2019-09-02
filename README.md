@@ -6,7 +6,7 @@ List of scripts:
 1.	cisco_SIE_Scan.py - Discovery Cisco Smart Installer vulnerability and gathering SNMP info from vulnerable device.
 2.	SMB_info_scanner.py - Discovery devices with open 445 and 139 ports and gathering OS and SMB protocols info.
 3.	Network_share_scanner.py - Discovery device with open 445 and 139 ports listing all shares on device and listing max 10 files from each discovered share.
-4.	Nmap_vuln_scanner_ServiceNow.py - Discovery devices vulnerable for selected nmap script for example ms17_010 (Wannacry) and gathering SMB info about OS and domain . Script is checking if there is already open ticket for that host in ServiceNow if not, it will create new.
+4.	Nmap_vuln_scanner_ServiceNow.py - Discovery devices vulnerable for selected nmap script for example ms17_010 (Wannacry) and gathering SMB info about OS and domain . Script is checking if there is already open ticket for that host in ServiceNow if not, it will create new. If ticket is resolved but  vuln still exist on the host, script will reopen ticket. 
 5.	Nmap_Metasploit_Scanner_Vuln.py - Discovery devices using nmap and scaning them using Metasploit vulnerability scanner , if devices is vulnerable script will gather SMB info about OS and domain . List of vulnerable IP are recorded in Metasploit DB.
 6.	Nmap_Metasploit_Scanner_Vuln_Threads.py – Very Quick and Fast  scanner to discovery devices by scanning of subnets or IPs from file and scanning them against vulns for example like CVE-2019-0708 "BlueKeep" using Metasploit modules . If devices is vulnerable script will gather SMB info about OS and domain .Script is using multiple threads to speed up scan . Lists of vulnerable devices are recorded in csv file .
 
