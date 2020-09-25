@@ -376,7 +376,8 @@ with results.i as f:
                                 if lists.computer_name == "":
                                     print(str(guesing_results))
                                     lists.computer_name = guesing_results[1]
-                            sites_results = sites_count(lists.ip)
+                            #sites_results = sites_count(lists.ip)
+                            sites_results = ""
                             if lists.computer_name != "":
                                 zerologon_results = zerologon(lists.computer_name, lists.ip)
                             else:
@@ -387,7 +388,8 @@ with results.i as f:
                     else:
                         print(host+",no_smb_info"+port_str)
                         os_guesing_re = os_guesing(host)
-                        sites_results = sites_count(host)
+                        #sites_results = sites_count(host)
+                        sites_results = ""
 
                         if os_guesing_re[1] != "":
                             zerologon_results = zerologon(lists.computer_name, lists.ip)
