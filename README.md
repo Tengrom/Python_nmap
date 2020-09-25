@@ -268,5 +268,35 @@ password type in the script in variable MSF_PASSWD
 Multiprocessing was based on very good described blog : "https://stackabuse.com/parallel-processing-in-python/"
 
 
+===========================
+
+**Script#6:  SMB_info_scanner_zerologon.py**
+
+Scanner for CVE-2020-1472(Zerologon)
+
+Steps:
+
+1. Script is first scaning for devices with (139 or 445) and 389 ports opened
+2. Checking if port 389 is responding with Domain Controler banner
+3. Use smb-os-discovery nmap script to gather netbios name for devices 
+4. Use gathered netbios name to check if device is vulnerable  CVE-202-1472 using code from https://github.com/SecuraBV/CVE-2020-1472 
+
+Todo :
+
+1. implement RDP script for gathering name
+2. clean the code
+
+Usage:
+
+SMB_info_scanner_zerologon.py [-h] -i in-subnets_list_csv -l in-vuln_list_csv -o out-file
+
+Example of subnets_list_csv:
+
+	10.10.10.10
+	192.168.0.0/24
+
+
+
+
 
 
