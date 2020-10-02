@@ -279,12 +279,12 @@ Steps:
 1. Script is first scaning for devices with (139 or 445) and 389 ports opened
 2. Checking if port 389 is responding with Domain Controler banner
 3. Use smb-os-discovery nmap script to gather netbios name for devices 
-4. Use gathered netbios name to check if device is vulnerable  CVE-202-1472 using code from https://github.com/SecuraBV/CVE-2020-1472 
+4. If name not found, it will try scan rdp port 3389 to gather name
+5. Use gathered netbios name to check if device is vulnerable  CVE-202-1472 using code from https://github.com/SecuraBV/CVE-2020-1472 
 
 Todo :
 
-1. implement RDP script for gathering name
-2. clean the code
+1. clean the code
 
 Usage:
 
