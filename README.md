@@ -289,6 +289,11 @@ Todo :
 Usage:
 
 SMB_info_scanner_zerologon.py [-h] -i in-subnets_list_csv -l in-vuln_list_csv -o out-file
+Additional arguments:
+-l True : will scan for LDAP port and only if that port will be open and Domain banner seen then scaning for zerologon vulnerability 
+-d True : will be just scaning hosts for name info without scanning vulnerability 
+
+
 
 Example of subnets_list_csv:
 
