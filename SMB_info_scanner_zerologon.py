@@ -335,15 +335,18 @@ with results.i as f:
             PORT_NM.scan(line, '445,139', "-sS")
 
         for host in PORT_NM.all_hosts():
-            testhost = PORT_NM._scan_result['scan'][host]
-            r2 = PORT_NM._scan_result['scan'][host]['status']['state']
-            r3 = PORT_NM._scan_result['scan'][host]['tcp'][445]['state']
-            r4 = PORT_NM._scan_result['scan'][host]['tcp'][139]['state']
-            
-            if ldap_flag:
-                r5 = PORT_NM._scan_result['scan'][host]['tcp'][389]['state']
+            testhost = PORT_NM._scan_result['scan']
+            if host in str(testhost):
+                r2 = PORT_NM._scan_result['scan'][host]['status']['state']
+                r3 = PORT_NM._scan_result['scan'][host]['tcp'][445]['state']
+                r4 = PORT_NM._scan_result['scan'][host]['tcp'][139]['state']
+                
+                if ldap_flag:
+                    r5 = PORT_NM._scan_result['scan'][host]['tcp'][389]['state']
+                else:
+                    r5 = "Ignored"
             else:
-                r5 = "Ignored"
+                r2 == "down"
             # when scanning large subnets, some ack can miss and it is marking open ports us filtered, need to scan againg it per ip is working fine
             if r2 == "up" and (r3 == "filtered" or r4 == "filtered"):
                 if not (r3 == "open" or r4 == "open"):
