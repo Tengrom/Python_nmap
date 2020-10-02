@@ -369,9 +369,10 @@ with results.i as f:
 
             if r5 == "open" and ldap_flag:
                 ldap_results = ldap_port_scan(host)
-            else:
+            elif not ldap_flag:
                 ldap_results = "LDAP Scan not enabled"
                 r5 = "Ignored"
+              
             #if ports are open start smb discovery  script
             print(host+","+r2+","+r3+","+r4+","+r5)
             if r2 == "up" and (r5 == "open" or r5 == "Ignored" )and (r3 == "open" or r4 == "open") and ldap_results != "Nope":
