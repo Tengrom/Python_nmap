@@ -32,7 +32,6 @@ MAX_ATTEMPTS = 2000 # False negative chance: 0.04%
 def fail(msg):
     print(msg, file=sys.stderr)
     print('This might have been caused by invalid arguments or network issues.', file=sys.stderr)
-    sys.exit(2)
 
 def try_zero_authenticate(dc_handle, dc_ip, target_computer):
     # Connect to the DC's Netlogon service.
@@ -108,12 +107,15 @@ except ImportError:
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', metavar='in-file', required=True, type=argparse.FileType('rt'))
 parser.add_argument('-o', metavar='out-file', required=True, type=argparse.FileType('wt'))
+parser.add_argument('-l', dest='ldap_flag', help='If flag is True then script will be checking only hosts with enabled ldap port' )
+parser.add_argument('-d', dest='detection_flag', help='If flag is True then script will be just discover hosts and gathering names' )
 parser.add_argument('-u', metavar='Username', action='store', dest='username', help='Username what will be used to discovery and accessing SMB . By defult it is guest username')
 parser.add_argument('-p', metavar='Password', action='store', dest='password', help='Password what will be used to discovery and accessing SMB . By defult it is empty')
 
 global args
 args = parser.parse_args()
-
+ldap_flag = args.ldap_flag
+detection_flag = args.detection_flag
 try:
     results = parser.parse_args()
     print('Input file: ' + str(results.i))
@@ -268,20 +270,49 @@ def ldap_port_scan(host_ldap):
     """ checking if server is DC by checking LDAP info"""
     OTHER_NM.scan(host_ldap, "389", " -sV")
     test_ldap = OTHER_NM._scan_result['scan'][host_ldap]['tcp']
-    if "Microsoft Windows Active Directory LDAP" in str(test_ldap):
-        domain = OTHER_NM._scan_result['scan'][host_ldap]['tcp'][389]['extrainfo']
+    test_ldap_port = OTHER_NM._scan_result['scan'][host]['tcp'][389]['state']
+    if test_ldap_port != "open":
+        for x in range(2, 11, 2):
+            print("Rescaning ldap port with retries "+str(x))
+            OTHER_NM.scan(host_ldap, "389", " -sV --max-retries "+str(x))
+            test_ldap = OTHER_NM._scan_result['scan'][host_ldap]['tcp']
+      
+            if test_ldap_port == "up":
+                test_ldap = OTHER_NM._scan_result['scan'][host_ldap]['tcp']
+                print("success resca")
+            else:
+                domain = "Nope"
     else:
-        domain = "Nope"
+        
+        if "Microsoft Windows Active Directory LDAP" in str(test_ldap):
+            domain = OTHER_NM._scan_result['scan'][host_ldap]['tcp'][389]['extrainfo']
+        else:
+            domain = "Nope"
+    print(str(domain))
     return domain
 
-def rdp_port_scam(host_rdp):
+def rdp_port_scan(host_rdp):
     """ if missing name it can be sometime retrive from rdp port"""
     OTHER_NM.scan(host_rdp, "3389", " -A")
     test_rdp = OTHER_NM._scan_result['scan'][host_rdp]['tcp']
     if "rdp-ntlm-info" in str(test_rdp):
         rdp_results = OTHER_NM._scan_result['scan'][host_rdp]['tcp'][3389]['script']['rdp-ntlm-info']
-    if "ssl-cert" in str(test_rdp):
+        netbios_computer_name_re = re.compile('(?<=NetBIOS_Computer_Name:).*')
+        netbios_computer_name = netbios_computer_name_re.search(dupa)
+        rdp_scan_re = netbios_computer_name[0].strip()
+    else:
+        rdp_scan_re = "Nope"
+    if "ssl-cert" in str(test_rdp) and rdp_scan_re == "Nope":
         rdp_ssl_results = OTHER_NM._scan_result['scan'][host_rdp]['tcp'][3389]['script']['ssl-cert']
+        computer_name_re = re.compile('(?<=commonName=).*')
+        computer_name = computer_name_re.search(rdp_ssl_results)
+        computer_name = computer_name[0].split(".")
+        rdp_scan_re = computer_name[0]
+    else:
+        rdp_scan_re = "Nope"
+    print("rdp_scan: "+str(rdp_scan_re))
+    return rdp_scan_re
+
 counter = 1
 counter_test = 1
 counter_rescan = 1
@@ -297,14 +328,22 @@ with results.i as f:
         print("=======================================")
 
         #Starting scan for 445 and 139 smb ports
-        PORT_NM.scan(line, '445,139,389', "-sS")
+        
+        if ldap_flag:
+            PORT_NM.scan(line, '445,139,389', "-sS")
+        else:
+            PORT_NM.scan(line, '445,139', "-sS")
+
         for host in PORT_NM.all_hosts():
             testhost = PORT_NM._scan_result['scan'][host]
             r2 = PORT_NM._scan_result['scan'][host]['status']['state']
             r3 = PORT_NM._scan_result['scan'][host]['tcp'][445]['state']
             r4 = PORT_NM._scan_result['scan'][host]['tcp'][139]['state']
-            r5 = PORT_NM._scan_result['scan'][host]['tcp'][389]['state']
-
+            
+            if ldap_flag:
+                r5 = PORT_NM._scan_result['scan'][host]['tcp'][389]['state']
+            else:
+                r5 = "Ignored"
             # when scanning large subnets, some ack can miss and it is marking open ports us filtered, need to scan againg it per ip is working fine
             if r2 == "up" and (r3 == "filtered" or r4 == "filtered"):
                 if not (r3 == "open" or r4 == "open"):
@@ -325,11 +364,14 @@ with results.i as f:
                 print(host+" rescanned "+counter_rescan_str)
                 counter_rescan_str = str(rescan_results[1])
 
-            if r5 == "open":
+            if r5 == "open" and ldap_flag:
                 ldap_results = ldap_port_scan(host)
+            else:
+                ldap_results = "LDAP Scan not enabled"
+                r5 = "Ignored"
             #if ports are open start smb discovery  script
             print(host+","+r2+","+r3+","+r4+","+r5)
-            if r2 == "up" and r5 == "open" and (r3 == "open" or r4 == "open") and ldap_results != "Nope":
+            if r2 == "up" and (r5 == "open" or r5 == "Ignored" )and (r3 == "open" or r4 == "open") and ldap_results != "Nope":
                 print("---------------------start scan --------------------------------")
                 if r3 == "open":
                     port_str = "445"
@@ -339,10 +381,9 @@ with results.i as f:
                 test_scan_finished = smb_scan(host, port_str, "--script smb-os-discovery.nse,smb-protocols.nse")
                 test_scan_finished_len = len(test_scan_finished)
                 print(str(test_scan_finished))
-                ldap_test = ldap_port_scan(host)
                 # Check if the host has not been  switched off in the middle of scan and if it is domain controler
-                if test_scan_finished_len == 0 and ldap_test == "Nope":
-                    results.o.write(host+",Scan_error,"+port_str+","+ldap_test+" \n")
+                if test_scan_finished_len == 0 :
+                    results.o.write(host+",Scan_error,"+port_str+","+ldap_results+" \n")
                     print(host+","+port_str+",Scan_error")
                 else:
                     output_scan_str = str(test_scan_finished)
@@ -364,7 +405,6 @@ with results.i as f:
                                 if test_hostscript == 2:
                                     break
                         print("Rescaning host")
-                    print(output_scan_str)
                     if scan_results_test in output_scan_str:
                         output_smb_parser = smb_info_parser(test_scan_finished, host)
                         counter_str = str(counter)
@@ -379,10 +419,24 @@ with results.i as f:
                             #sites_results = sites_count(lists.ip)
                             sites_results = ""
                             if lists.computer_name != "":
-                                zerologon_results = zerologon(lists.computer_name, lists.ip)
+                                                                    
+                                if detection_flag:
+                                    zerologon_results = "Not scanned"
+                                else:
+                                    zerologon_results = zerologon(lists.computer_name, lists.ip)
                             else:
-                                zerologon_results = "Lack of computer name to scan"
+                                rdp_scan_results = rdp_port_scan(host) 
+                                if rdp_scan_results == "Nope":
+                                    zerologon_results = "Lack of computer name to scan"
+                                else:
+                                    lists.computer_name = rdp_scan_results
+                                    if detection_flag:
+                                        zerologon_results = "Not scanned"
+                                    else:
+                                        zerologon_results = zerologon(lists.computer_name, lists.ip)
+
                             host_list = lists.ip+","+sites_results+","+lists.computer_name+","+lists.OS+","+lists.Domain+","+lists.workgroup+","+lists.CPE+","+lists.Dialects+","+lists.SMBv1+","+str(ldap_results)+","+zerologon_results+"\n"
+                            print(str(host_list))
                             results.o.write(host_list)
                             counter = counter+1
                     else:
@@ -392,10 +446,25 @@ with results.i as f:
                         sites_results = ""
 
                         if os_guesing_re[1] != "":
-                            zerologon_results = zerologon(lists.computer_name, lists.ip)
+                            computer_name = os_guesing_re[1]
+                            if detection_flag:
+                                zerologon_results = "Not scanner"
+                            else:
+                                zerologon_results = zerologon(lists.computer_name, lists.ip)
+                            zerologon_results = "not configured"
                         else:
-                            zerologon_results = "Lack of computer name to scan"
-                        results.o.write(host+","+sites_results+","+os_guesing_re[1]+","+os_guesing_re[0]+",no_smb_info,"+str(ldap_results)+zerologon_results+"\n")
+                            rdp_scan_results = rdp_port_scan(host) 
+                            if rdp_scan_results == "Nope":
+                                zerologon_results = "Lack of computer name to scan"
+                            else:
+                                computer_name = rdp_scan_results
+                                if detection_flag:
+                                    zerologon_results = "Not scanned"
+                                else:
+                                    zerologon_results = zerologon(computer_name, lists.ip)
+                        host_list = host+","+sites_results+","+computer_name+","+os_guesing_re[0]+",no_smb_info,"+str(ldap_results)+zerologon_results+"\n"
+                        results.o.write(host_list)
+                        print()
                 print(counter_str+","+host+","+port_str)
                 print("---------------------end scan --------------------------------")
 print("Number of host from with one has been received smb info:")
