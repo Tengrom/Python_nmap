@@ -69,7 +69,10 @@ def perform_attack(dc_handle, dc_ip, target_computer):
     print('Performing authentication attempts...')
     rpc_con = None
     for attempt in range(0, MAX_ATTEMPTS):
-        rpc_con = try_zero_authenticate(dc_handle, dc_ip, target_computer)
+        try:
+            rpc_con = try_zero_authenticate(dc_handle, dc_ip, target_computer)
+        except:
+            rpc_con = None
         if rpc_con == None:
             print('=', end='', flush=True)
         else:
@@ -109,6 +112,7 @@ parser.add_argument('-i', metavar='in-file', required=True, type=argparse.FileTy
 parser.add_argument('-o', metavar='out-file', required=True, type=argparse.FileType('wt'))
 parser.add_argument('-l', dest='ldap_flag', help='If flag is True then script will be checking only hosts with enabled ldap port' )
 parser.add_argument('-d', dest='detection_flag', help='If flag is True then script will be just discover hosts and gathering names' )
+parser.add_argument('-g', dest='guesing_flag', help='If flag is True then script will be  discoveri OS using nmap guesing function and gather name using DNS' )
 parser.add_argument('-u', metavar='Username', action='store', dest='username', help='Username what will be used to discovery and accessing SMB . By defult it is guest username')
 parser.add_argument('-p', metavar='Password', action='store', dest='password', help='Password what will be used to discovery and accessing SMB . By defult it is empty')
 
@@ -116,6 +120,8 @@ global args
 args = parser.parse_args()
 ldap_flag = args.ldap_flag
 detection_flag = args.detection_flag
+guesing_flag = args.guesing_flag
+
 try:
     results = parser.parse_args()
     print('Input file: ' + str(results.i))
@@ -187,8 +193,9 @@ def smb_info_parser(nmap_results, host_ip):
             if computer_name:
                 computer_name = computer_name.group().strip()
                 network_class.add_computer_name(computer_name)
-            workgroup_re = re.compile('(?<=workgroup:).*')
+            workgroup_re = re.compile('(?<=Workgroup:).*')
             workgroup = workgroup_re.search(output['output'])
+            print(str(workgroup))
             if workgroup:
                 workgroup = workgroup.group().strip()
                 network_class.add_workgroup(workgroup)
@@ -298,7 +305,7 @@ def rdp_port_scan(host_rdp):
     if "rdp-ntlm-info" in str(test_rdp):
         rdp_results = OTHER_NM._scan_result['scan'][host_rdp]['tcp'][3389]['script']['rdp-ntlm-info']
         netbios_computer_name_re = re.compile('(?<=NetBIOS_Computer_Name:).*')
-        netbios_computer_name = netbios_computer_name_re.search(dupa)
+        netbios_computer_name = netbios_computer_name_re.search(rdp_results)
         rdp_scan_re = netbios_computer_name[0].strip()
     else:
         rdp_scan_re = "Nope"
@@ -414,7 +421,7 @@ with results.i as f:
                         counter_str = str(counter)
                         for lists in output_smb_parser:
                             # if smb scans failed then try guesing os using nmap and name from reverse dns
-                            if lists.OS == "":
+                            if lists.OS == "" and guesing_flag:
                                 guesing_results = os_guesing(host)
                                 lists.OS = "guesing("+guesing_results[0]+")"
                                 if lists.computer_name == "":
@@ -423,9 +430,10 @@ with results.i as f:
                             #sites_results = sites_count(lists.ip)
                             sites_results = ""
                             if lists.computer_name != "":
-                                                                    
                                 if detection_flag:
                                     zerologon_results = "Not scanned"
+                                elif lists.workgroup != "":
+                                    zerologon_results = "Not scanned becouse workgroup not domain"
                                 else:
                                     zerologon_results = zerologon(lists.computer_name, lists.ip)
                             else:
@@ -445,12 +453,16 @@ with results.i as f:
                             counter = counter+1
                     else:
                         print(host+",no_smb_info"+port_str)
-                        os_guesing_re = os_guesing(host)
+                        if guesing_flag:
+                            os_guesing_re = os_guesing(host)
+                        else:
+                            os_guesing_re = ["",""]
                         #sites_results = sites_count(host)
                         sites_results = ""
 
                         if os_guesing_re[1] != "":
                             computer_name = os_guesing_re[1]
+                            
                             if detection_flag:
                                 zerologon_results = "Not scanner"
                             else:
