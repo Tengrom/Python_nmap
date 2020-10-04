@@ -71,8 +71,10 @@ def perform_attack(dc_handle, dc_ip, target_computer):
     for attempt in range(0, MAX_ATTEMPTS):
         try:
             rpc_con = try_zero_authenticate(dc_handle, dc_ip, target_computer)
-        except:
+        except BaseException as ex:
             rpc_con = None
+            fail(f'Unexpected error: {ex}.')
+
         if rpc_con == None:
             print('=', end='', flush=True)
         else:
@@ -452,6 +454,7 @@ with results.i as f:
                             results.o.write(host_list)
                             counter = counter+1
                     else:
+                        computer_name = ""
                         print(host+",no_smb_info"+port_str)
                         if guesing_flag:
                             os_guesing_re = os_guesing(host)
@@ -466,10 +469,11 @@ with results.i as f:
                             if detection_flag:
                                 zerologon_results = "Not scanner"
                             else:
-                                zerologon_results = zerologon(lists.computer_name, lists.ip)
+                                zerologon_results = zerologon(computer_name, host)
                             zerologon_results = "not configured"
                         else:
-                            rdp_scan_results = rdp_port_scan(host) 
+                            rdp_scan_results = rdp_port_scan(host)
+                            print(str(rdp_scan_results))
                             if rdp_scan_results == "Nope":
                                 zerologon_results = "Lack of computer name to scan"
                             else:
@@ -477,8 +481,8 @@ with results.i as f:
                                 if detection_flag:
                                     zerologon_results = "Not scanned"
                                 else:
-                                    zerologon_results = zerologon(computer_name, lists.ip)
-                        host_list = host+","+sites_results+","+computer_name+","+os_guesing_re[0]+",no_smb_info,"+str(ldap_results)+zerologon_results+"\n"
+                                    zerologon_results = zerologon(computer_name, host)
+                        host_list = host+","+sites_results+","+computer_name+","+os_guesing_re[0]+",no_smb_info,"+str(ldap_results)+","+zerologon_results+"\n"
                         results.o.write(host_list)
                         print()
                 print(counter_str+","+host+","+port_str)
