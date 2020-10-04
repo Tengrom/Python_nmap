@@ -292,6 +292,8 @@ SMB_info_scanner_zerologon.py [-h] -i in-subnets_list_csv -l in-vuln_list_csv -o
 Additional arguments:
 -l True : will scan for LDAP port and only if that port will be open and Domain banner seen then scaning for zerologon vulnerability 
 -d True : will be just scaning hosts for name info without scanning vulnerability 
+-g GUESING_FLAG    If flag is True then script will be discoveri OS using
+                     nmap guesing function and gather name using DNS
 
 
 
